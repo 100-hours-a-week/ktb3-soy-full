@@ -1,11 +1,9 @@
 package org.example;
 
-import java.util.concurrent.TimeUnit;
-
-public class Person {
+public class Counselor {
     String name;
 
-    public Person(String name){
+    public Counselor(String name){
         this.name = name;
         this.sayHello();
     }

@@ -1,8 +1,8 @@
 package org.example;
 
-public class PersonTP extends PersonT{
+public class RationalFlexibleCounselor extends RationalCounselor {
 
-    public PersonTP(String name){
+    public RationalFlexibleCounselor(String name){
         super(name);
     }
 

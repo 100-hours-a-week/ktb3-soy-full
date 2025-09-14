@@ -1,8 +1,8 @@
 package org.example;
 
-public class PersonT extends Person{
+public class RationalCounselor extends Counselor {
 
-    public PersonT(String name) {
+    public RationalCounselor(String name) {
         super(name);
     }
 

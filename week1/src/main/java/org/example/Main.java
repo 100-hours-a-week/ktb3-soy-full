@@ -41,7 +41,7 @@ public class Main {
             counselorList.put(name, false); // 상담사 상담 가능 상태 수정
 
             if (name.equals("bri")) {
-                PersonTJ counselor = new PersonTJ(name);
+                RationalOrganizedCounselor counselor = new RationalOrganizedCounselor(name);
                 counselor.askFirstQuestion();
                 String hasSolution = sc.next();
                 if (hasSolution.equals("y")) {
@@ -56,7 +56,7 @@ public class Main {
                     counselor.adviceFirstQuestion();
                 }
             } else if (name.equals("ana")) {
-                PersonTP counselor = new PersonTP(name);
+                RationalFlexibleCounselor counselor = new RationalFlexibleCounselor(name);
                 counselor.askFirstQuestion();
                 String ans = sc.next();
                 if (ans.equals("y")) {
@@ -71,7 +71,7 @@ public class Main {
                     counselor.adviceFirstQuestion();
                 }
             } else if (name.equals("zen")) {
-                PersonFP counselor = new PersonFP(name);
+                EmotionalFlexibleCounselor counselor = new EmotionalFlexibleCounselor(name);
                 counselor.askFirstQuestion();
                 String isStressed = sc.next();
                 if (isStressed.equals("n")) {
@@ -86,7 +86,7 @@ public class Main {
                     counselor.adviceFirstQuestion();
                 }
             } else if (name.equals("dva")) {
-                PersonFJ counselor = new PersonFJ(name);
+                EmotionalOrganizedCounselor counselor = new EmotionalOrganizedCounselor(name);
                 counselor.askFirstQuestion();
                 String isStressed = sc.next();
                 if (isStressed.equals("n")) {
@@ -121,7 +121,6 @@ public class Main {
         System.out.println("저희 프로그램을 찾아주셔서 감사합니다.");
         System.out.println("다음에 고민거리가 생긴다면 언제든 저희를 찾아주세요.");
         System.out.println("좋은 날들 가득하시길 바라며..🍀");
-        System.exit(0);
     }
 
     private static boolean isPossibleToConsult(HashMap<String, Boolean> counselorList) {

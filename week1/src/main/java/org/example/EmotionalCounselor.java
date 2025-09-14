@@ -1,7 +1,7 @@
 package org.example;
 
-public class PersonF extends Person {
-    public PersonF(String name) {
+public class EmotionalCounselor extends Counselor {
+    public EmotionalCounselor(String name) {
         super(name);
     }
 

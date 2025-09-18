@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.CounselorPackage.*;
+import org.example.UtilPackage.InputHandler;
 
 import java.util.HashMap;
 
@@ -87,8 +88,6 @@ public class ConsultService {
             return false;
         }
     }
-
-
 
     public Counselor getCounselor(){
         Counselor counselor = null;

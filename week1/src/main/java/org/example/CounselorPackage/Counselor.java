@@ -1,7 +1,9 @@
 package org.example.CounselorPackage;
+import org.example.UtilPackage.InputHandler;
 
 public class Counselor {
     String name;
+    InputHandler inputHandler = new InputHandler();
 
     public Counselor(String name){
         this.name = name;

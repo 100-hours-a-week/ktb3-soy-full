@@ -29,12 +29,11 @@ public class EmotionalFlexibleCounselor extends EmotionalCounselor {
     }
 
     public void consult() throws InterruptedException {
-        Scanner sc = new Scanner(System.in);
         askFirstQuestion();
-        String isStressed = sc.next();
+        String isStressed = inputHandler.getYesOrNo();
         if (isStressed.equals("n")) {
             askSecondQuestion();
-            String hasDesireFor = sc.next();
+            String hasDesireFor = inputHandler.getYesOrNo();
             if (hasDesireFor.equals("y")) {
                 adviceSecondQuestionYes();
             } else {

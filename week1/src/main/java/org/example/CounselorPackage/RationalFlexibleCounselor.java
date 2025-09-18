@@ -3,7 +3,7 @@ package org.example.CounselorPackage;
 import java.util.Scanner;
 
 public class RationalFlexibleCounselor extends RationalCounselor {
-
+    private int deadlineLimit = 7;
     public RationalFlexibleCounselor(String name){
         super(name);
     }
@@ -31,12 +31,11 @@ public class RationalFlexibleCounselor extends RationalCounselor {
     }
 
     public void consult() throws InterruptedException {
-        Scanner sc = new Scanner(System.in); // todo
         askFirstQuestion();
-        String ans = sc.next();
+        String ans = inputHandler.getYesOrNo();
         if (ans.equals("y")) {
             askSecondQuestion();
-            int deadline = sc.nextInt();
+            int deadline = inputHandler.getDeadline();
             if (deadline > 7) {
                 adviceToSecondQuestionYesTime();
             } else {

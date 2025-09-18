@@ -3,22 +3,29 @@ package org.example;
 import java.util.Scanner;
 
 public class InputHandler {
-    Scanner scanner;
+    Scanner sc = new Scanner(System.in);
 
-    InputHandler(Scanner sc){
-        this.scanner = sc;
+    public String getString(){return sc.next();}
+
+    public String getYesOrNo() {
+        while (true) {
+            String answer = getString();
+            if (answer.equals("y") || answer.equals("n")) { return answer; }
+            else { System.out.println("[입력 에러] y 또는 n만 입력하세요."); }
+        }
     }
 
-    public String getNameOfCounselor(){
-        return this.scanner.next();
-    }
+    public int getDeadline(){
+        while (true) {
+            try{
+                String answer = getString();
+                int deadline = Integer.parseInt(answer);
+                return deadline;
+            } catch (Exception e){
+                System.out.println("[입력 에러] 숫자를 입력하세요.");
+            }
 
-    public boolean hasSolution(){
-        while (true){
-            String ans = this.scanner.next();
-            if (ans.equals('y')) {return true;}
-            else if (ans.equals('n')){return false;}
-            System.out.println("y 또는 n을 입력해주세요.");
+
         }
     }
 

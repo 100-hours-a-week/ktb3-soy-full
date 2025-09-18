@@ -1,12 +1,10 @@
 package org.example;
 
 import java.util.HashMap;
-import java.util.Scanner;
-
 
 public class Main {
     public static <Int> void main(String[] args) throws InterruptedException {
-        Scanner sc = new Scanner(System.in);
+        InputHandler handler = new InputHandler();
 
         HashMap<String, Boolean> counselorList = new HashMap<>();
         counselorList.put("bri", true);
@@ -18,8 +16,6 @@ public class Main {
         consultProgram.introduceProgram();
         consultProgram.introduceCounselor();
 
-        InputHandler inputHandler = new InputHandler(sc);
-
         while (true) {
 
             if (consultProgram.isPossibleToConsult(counselorList) == false){
@@ -28,7 +24,7 @@ public class Main {
             }
 
             System.out.println("마음에 드는 상담사 분의 이름을 입력해주세요.");
-            String name = inputHandler.getNameOfCounselor();
+            String name = handler.getString();
 
             if (counselorList.containsKey(name) == false) {
                 System.out.println("저희 프로그램 상담사가 아닙니다. 다시 선정하세요.");
@@ -45,9 +41,10 @@ public class Main {
             if (name.equals("bri")) {
                 RationalOrganizedCounselor counselor = new RationalOrganizedCounselor(name);
                 counselor.askFirstQuestion();
-                if (inputHandler.hasSolution()) {
+                String hasSolution = handler.getYesOrNo();
+                if (hasSolution.equals("y")) {
                     counselor.askSecondQuestion();
-                    String hasPlan = sc.next();
+                    String hasPlan = handler.getYesOrNo();
                     if (hasPlan.equals("y")) {
                         counselor.adviceSecondQuestionYes();
                     } else {
@@ -59,10 +56,10 @@ public class Main {
             } else if (name.equals("ana")) {
                 RationalFlexibleCounselor counselor = new RationalFlexibleCounselor(name);
                 counselor.askFirstQuestion();
-                String ans = sc.next();
+                String ans = handler.getYesOrNo();
                 if (ans.equals("y")) {
                     counselor.askSecondQuestion();
-                    int deadline = sc.nextInt();
+                    int deadline = handler.getDeadline();
                     if (deadline > 7) {
                         counselor.adviceToSecondQuestionYesTime();
                     } else {
@@ -74,10 +71,10 @@ public class Main {
             } else if (name.equals("zen")) {
                 EmotionalFlexibleCounselor counselor = new EmotionalFlexibleCounselor(name);
                 counselor.askFirstQuestion();
-                String isStressed = sc.next();
+                String isStressed = handler.getYesOrNo();
                 if (isStressed.equals("n")) {
                     counselor.askSecondQuestion();
-                    String hasDesireFor = sc.next();
+                    String hasDesireFor = handler.getYesOrNo();
                     if (hasDesireFor.equals("y")) {
                         counselor.adviceSecondQuestionYes();
                     } else {
@@ -89,10 +86,10 @@ public class Main {
             } else if (name.equals("dva")) {
                 EmotionalOrganizedCounselor counselor = new EmotionalOrganizedCounselor(name);
                 counselor.askFirstQuestion();
-                String isStressed = sc.next();
+                String isStressed = handler.getYesOrNo();
                 if (isStressed.equals("n")) {
                     counselor.askSecondQuestion();
-                    String hasPlan = sc.next();
+                    String hasPlan = handler.getYesOrNo();
                     if (hasPlan.equals("y")) {
                         counselor.adviceSecondQuestionYes();
                     } else {
@@ -104,7 +101,7 @@ public class Main {
             }
 
             System.out.println("상담은 만족스러우셨나요? y 또는 n으로 답변해주세요.");
-            String isSatisfied = sc.next();
+            String isSatisfied = handler.getYesOrNo();
 
             if (isSatisfied.equals("y")) {
                 // 프로그램 종료

@@ -4,9 +4,9 @@ import org.example.utility.InputHandler;
 public class Counselor {
     public String name;
     public InputHandler inputHandler = new InputHandler();
-    public final String YES = "y";
-    public String NO = "n";
-    public int deadlineLimitDays = 7;
+    public static final String YES = "y";
+    public static final String NO = "n";
+    public static final int deadlineLimitDays = 7;
 
     public Counselor(String name){
         this.name = name;

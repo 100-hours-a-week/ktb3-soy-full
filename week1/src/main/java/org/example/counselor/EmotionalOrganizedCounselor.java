@@ -32,10 +32,10 @@ public class EmotionalOrganizedCounselor extends EmotionalCounselor {
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String isStressed = inputHandler.getYesOrNo();
-        if (isStressed.equals("n")) {
+        if (isStressed.equals(NO)) {
             askSecondQuestion();
             String hasPlan = inputHandler.getYesOrNo();
-            if (hasPlan.equals("y")) {
+            if (hasPlan.equals(YES)) {
                 adviceSecondQuestionYes();
             } else {
                 adviceSecondQuestionNo();

@@ -4,6 +4,8 @@ import org.example.utility.InputHandler;
 public class Counselor {
     String name;
     InputHandler inputHandler = new InputHandler();
+    String YES = "y";
+    String NO = "n";
 
     public Counselor(String name){
         this.name = name;

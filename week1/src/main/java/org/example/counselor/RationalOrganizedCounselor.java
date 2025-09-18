@@ -29,10 +29,10 @@ public class RationalOrganizedCounselor extends RationalCounselor {
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String hasSolution = inputHandler.getYesOrNo();
-        if (hasSolution.equals("y")) {
+        if (hasSolution.equals(YES)) {
             askSecondQuestion();
             String hasPlan = inputHandler.getYesOrNo();
-            if (hasPlan.equals("y")) {
+            if (hasPlan.equals(YES)) {
                 adviceSecondQuestionYes();
             } else {
                 adviceSecondQuestionNo();

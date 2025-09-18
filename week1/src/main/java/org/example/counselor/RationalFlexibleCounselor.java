@@ -31,10 +31,10 @@ public class RationalFlexibleCounselor extends RationalCounselor {
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String ans = inputHandler.getYesOrNo();
-        if (ans.equals("y")) {
+        if (ans.equals(YES)) {
             askSecondQuestion();
             int deadline = inputHandler.getDeadline();
-            if (deadline > 7) {
+            if (deadline > deadlineLimit) {
                 adviceToSecondQuestionYesTime();
             } else {
                 adviceToSecondQuestionNoTime();

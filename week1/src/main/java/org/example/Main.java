@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.CounselorPackage.*;
+import org.example.counselor.*;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {

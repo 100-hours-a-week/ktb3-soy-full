@@ -1,6 +1,4 @@
-package org.example.CounselorPackage;
-
-import java.util.Scanner;
+package org.example.counselor;
 
 public class RationalFlexibleCounselor extends RationalCounselor {
     private int deadlineLimit = 7;

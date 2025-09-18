@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.CounselorPackage.*;
-import org.example.UtilPackage.InputHandler;
+import org.example.counselor.*;
+import org.example.utility.InputHandler;
 
 import java.util.HashMap;
 

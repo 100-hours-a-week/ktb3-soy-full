@@ -1,5 +1,5 @@
-package org.example.CounselorPackage;
-import org.example.UtilPackage.InputHandler;
+package org.example.counselor;
+import org.example.utility.InputHandler;
 
 public class Counselor {
     String name;

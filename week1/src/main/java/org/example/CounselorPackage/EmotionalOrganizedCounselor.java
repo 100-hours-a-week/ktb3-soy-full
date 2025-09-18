@@ -1,5 +1,7 @@
 package org.example.CounselorPackage;
 
+import java.util.Scanner;
+
 public class EmotionalOrganizedCounselor extends EmotionalCounselor {
     public EmotionalOrganizedCounselor(String name) {
         super(name);
@@ -27,6 +29,23 @@ public class EmotionalOrganizedCounselor extends EmotionalCounselor {
         System.out.println("당신은 혼자가 아니에요.");
         System.out.println("당장 할 수 있는게 무엇일 것 같나요? 하나씩 같이 해봐요!");
         System.out.println("-".repeat(50));
+    }
+
+    public void consult() throws InterruptedException {
+        Scanner sc = new Scanner(System.in); // todo
+        askFirstQuestion();
+        String isStressed = sc.next();
+        if (isStressed.equals("n")) {
+            askSecondQuestion();
+            String hasPlan = sc.next();
+            if (hasPlan.equals("y")) {
+                adviceSecondQuestionYes();
+            } else {
+                adviceSecondQuestionNo();
+            }
+        } else {
+            adviceFirstQuestion();
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package org.example.CounselorPackage;
 
+import java.util.Scanner;
+
 public class RationalOrganizedCounselor extends RationalCounselor {
     public RationalOrganizedCounselor(String name) {
         super(name);
@@ -24,5 +26,22 @@ public class RationalOrganizedCounselor extends RationalCounselor {
         System.out.println("해결책도, 계획도 있다면 뭐가 문제입니까?");
         System.out.println("어서 행동하세요!");
         System.out.println("-".repeat(50));
+    }
+
+    public void consult() throws InterruptedException {
+        Scanner sc = new Scanner(System.in); // todo
+        super.askFirstQuestion();
+        String hasSolution = sc.next();
+        if (hasSolution.equals("y")) {
+            askSecondQuestion();
+            String hasPlan = sc.next();
+            if (hasPlan.equals("y")) {
+                adviceSecondQuestionYes();
+            } else {
+                adviceSecondQuestionNo();
+            }
+        } else {
+            adviceFirstQuestion();
+        }
     }
 }

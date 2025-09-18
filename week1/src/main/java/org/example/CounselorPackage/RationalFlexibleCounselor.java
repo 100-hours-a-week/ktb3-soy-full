@@ -1,5 +1,7 @@
 package org.example.CounselorPackage;
 
+import java.util.Scanner;
+
 public class RationalFlexibleCounselor extends RationalCounselor {
 
     public RationalFlexibleCounselor(String name){
@@ -26,6 +28,23 @@ public class RationalFlexibleCounselor extends RationalCounselor {
         System.out.println("지금 가지고 계신 해결책으로 계획을 세우셔야 합니다.");
         System.out.println("지금 당장 계획을 세우십시오.");
         System.out.println("-".repeat(50));
+    }
+
+    public void consult() throws InterruptedException {
+        Scanner sc = new Scanner(System.in); // todo
+        askFirstQuestion();
+        String ans = sc.next();
+        if (ans.equals("y")) {
+            askSecondQuestion();
+            int deadline = sc.nextInt();
+            if (deadline > 7) {
+                adviceToSecondQuestionYesTime();
+            } else {
+                adviceToSecondQuestionNoTime();
+            }
+        } else {
+            adviceFirstQuestion();
+        }
     }
 
 

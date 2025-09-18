@@ -1,5 +1,10 @@
 package org.example;
 
+import org.example.CounselorPackage.EmotionalFlexibleCounselor;
+import org.example.CounselorPackage.EmotionalOrganizedCounselor;
+import org.example.CounselorPackage.RationalFlexibleCounselor;
+import org.example.CounselorPackage.RationalOrganizedCounselor;
+
 import java.util.HashMap;
 
 public class Main {

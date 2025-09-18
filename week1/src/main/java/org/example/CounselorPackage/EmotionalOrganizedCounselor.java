@@ -1,4 +1,4 @@
-package org.example;
+package org.example.CounselorPackage;
 
 public class EmotionalOrganizedCounselor extends EmotionalCounselor {
     public EmotionalOrganizedCounselor(String name) {

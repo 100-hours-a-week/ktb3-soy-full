@@ -7,7 +7,7 @@ public class RationalFlexibleCounselor extends RationalCounselor {
     }
 
     public void askSecondQuestion(){
-        System.out.println("데드라인이 얼마나 남았나요?");
+        System.out.println("데드라인이 몇 일 남았나요?");
     }
 
     public void adviceToSecondQuestionYesTime() throws InterruptedException {

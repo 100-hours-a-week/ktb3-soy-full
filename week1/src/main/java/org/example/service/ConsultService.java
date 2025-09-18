@@ -1,4 +1,4 @@
-package org.example;
+package org.example.service;
 
 import org.example.counselor.*;
 import org.example.utility.InputHandler;
@@ -8,9 +8,9 @@ import java.util.HashMap;
 public class ConsultService {
     private InputHandler handler = new InputHandler();
     public HashMap<String, Boolean> counselorList = new HashMap<>();
-    private boolean hasDone = false;
+    public static final boolean hasDone = false;
 
-    ConsultService(){
+    public ConsultService(){
         counselorList.put("bri", hasDone);
         counselorList.put("ana", hasDone);
         counselorList.put("dva", hasDone);

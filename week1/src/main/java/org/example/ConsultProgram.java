@@ -4,9 +4,7 @@ import java.util.HashMap;
 
 public class ConsultProgram {
 
-    ConsultProgram(){
-
-    }
+    ConsultProgram(){}
 
     public void introduceProgram() {
         System.out.println("고민이 있나요? 어떻게 해결하면 좋을지 알듯 말듯 잘 모르시겠나요?");

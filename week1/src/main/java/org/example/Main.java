@@ -14,10 +14,11 @@ public class Main {
         counselorList.put("dva", true);
         counselorList.put("zen", true);
 
-
         ConsultProgram consultProgram = new ConsultProgram();
         consultProgram.introduceProgram();
         consultProgram.introduceCounselor();
+
+        InputHandler inputHandler = new InputHandler(sc);
 
         while (true) {
 
@@ -27,7 +28,7 @@ public class Main {
             }
 
             System.out.println("마음에 드는 상담사 분의 이름을 입력해주세요.");
-            String name = sc.next();
+            String name = inputHandler.getNameOfCounselor();
 
             if (counselorList.containsKey(name) == false) {
                 System.out.println("저희 프로그램 상담사가 아닙니다. 다시 선정하세요.");
@@ -44,8 +45,7 @@ public class Main {
             if (name.equals("bri")) {
                 RationalOrganizedCounselor counselor = new RationalOrganizedCounselor(name);
                 counselor.askFirstQuestion();
-                String hasSolution = sc.next();
-                if (hasSolution.equals("y")) {
+                if (inputHandler.hasSolution()) {
                     counselor.askSecondQuestion();
                     String hasPlan = sc.next();
                     if (hasPlan.equals("y")) {

@@ -21,4 +21,6 @@ public class Counselor {
         Thread.sleep(5000);
         System.out.println("생각 완료!");
     }
+
+    public void consult() throws InterruptedException {}
 }

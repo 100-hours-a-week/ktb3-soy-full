@@ -1,7 +1,12 @@
-package org.example;
+package org.example.counselor;
+import org.example.utility.InputHandler;
 
 public class Counselor {
-    String name;
+    public String name;
+    public InputHandler inputHandler = new InputHandler();
+    public static final String YES = "y";
+    public static final String NO = "n";
+    public static final int deadlineLimitDays = 7;
 
     public Counselor(String name){
         this.name = name;
@@ -21,4 +26,6 @@ public class Counselor {
         Thread.sleep(5000);
         System.out.println("생각 완료!");
     }
+
+    public void consult() throws InterruptedException {}
 }

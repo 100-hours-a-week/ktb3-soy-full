@@ -1,4 +1,4 @@
-package org.example;
+package org.example.counselor;
 
 public class RationalCounselor extends Counselor {
 

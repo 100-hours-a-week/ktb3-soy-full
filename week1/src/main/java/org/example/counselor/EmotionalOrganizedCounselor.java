@@ -1,4 +1,4 @@
-package org.example;
+package org.example.counselor;
 
 public class EmotionalOrganizedCounselor extends EmotionalCounselor {
     public EmotionalOrganizedCounselor(String name) {
@@ -27,6 +27,23 @@ public class EmotionalOrganizedCounselor extends EmotionalCounselor {
         System.out.println("당신은 혼자가 아니에요.");
         System.out.println("당장 할 수 있는게 무엇일 것 같나요? 하나씩 같이 해봐요!");
         System.out.println("-".repeat(50));
+    }
+
+    @Override
+    public void consult() throws InterruptedException {
+        askFirstQuestion();
+        String isStressed = inputHandler.getYesOrNo();
+        if (isStressed.equals(NO)) {
+            askSecondQuestion();
+            String hasPlan = inputHandler.getYesOrNo();
+            if (hasPlan.equals(YES)) {
+                adviceSecondQuestionYes();
+            } else {
+                adviceSecondQuestionNo();
+            }
+        } else {
+            adviceFirstQuestion();
+        }
     }
 
 }

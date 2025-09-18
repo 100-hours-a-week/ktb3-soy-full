@@ -1,4 +1,4 @@
-package org.example;
+package org.example.counselor;
 
 public class RationalOrganizedCounselor extends RationalCounselor {
     public RationalOrganizedCounselor(String name) {
@@ -24,5 +24,22 @@ public class RationalOrganizedCounselor extends RationalCounselor {
         System.out.println("해결책도, 계획도 있다면 뭐가 문제입니까?");
         System.out.println("어서 행동하세요!");
         System.out.println("-".repeat(50));
+    }
+
+    @Override
+    public void consult() throws InterruptedException {
+        askFirstQuestion();
+        String hasSolution = inputHandler.getYesOrNo();
+        if (hasSolution.equals(YES)) {
+            askSecondQuestion();
+            String hasPlan = inputHandler.getYesOrNo();
+            if (hasPlan.equals(YES)) {
+                adviceSecondQuestionYes();
+            } else {
+                adviceSecondQuestionNo();
+            }
+        } else {
+            adviceFirstQuestion();
+        }
     }
 }

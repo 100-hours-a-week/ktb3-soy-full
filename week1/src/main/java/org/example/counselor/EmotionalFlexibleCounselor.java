@@ -26,6 +26,7 @@ public class EmotionalFlexibleCounselor extends EmotionalCounselor {
         System.out.println("-".repeat(50));
     }
 
+    @Override
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String isStressed = inputHandler.getYesOrNo();

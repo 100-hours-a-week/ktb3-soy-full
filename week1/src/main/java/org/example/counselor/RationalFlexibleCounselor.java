@@ -1,7 +1,7 @@
 package org.example.counselor;
 
 public class RationalFlexibleCounselor extends RationalCounselor {
-    private int deadlineLimit = 7;
+
     public RationalFlexibleCounselor(String name){
         super(name);
     }
@@ -28,13 +28,14 @@ public class RationalFlexibleCounselor extends RationalCounselor {
         System.out.println("-".repeat(50));
     }
 
+    @Override
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String ans = inputHandler.getYesOrNo();
         if (ans.equals(YES)) {
             askSecondQuestion();
             int deadline = inputHandler.getDeadline();
-            if (deadline > deadlineLimit) {
+            if (deadline > deadlineLimitDays) {
                 adviceToSecondQuestionYesTime();
             } else {
                 adviceToSecondQuestionNoTime();

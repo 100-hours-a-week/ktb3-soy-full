@@ -2,10 +2,11 @@ package org.example.counselor;
 import org.example.utility.InputHandler;
 
 public class Counselor {
-    String name;
-    InputHandler inputHandler = new InputHandler();
-    String YES = "y";
-    String NO = "n";
+    public String name;
+    public InputHandler inputHandler = new InputHandler();
+    public final String YES = "y";
+    public String NO = "n";
+    public int deadlineLimitDays = 7;
 
     public Counselor(String name){
         this.name = name;

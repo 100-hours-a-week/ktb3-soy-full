@@ -26,6 +26,7 @@ public class RationalOrganizedCounselor extends RationalCounselor {
         System.out.println("-".repeat(50));
     }
 
+    @Override
     public void consult() throws InterruptedException {
         askFirstQuestion();
         String hasSolution = inputHandler.getYesOrNo();

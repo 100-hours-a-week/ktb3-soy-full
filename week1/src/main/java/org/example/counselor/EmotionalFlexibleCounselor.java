@@ -1,8 +1,8 @@
 package org.example.counselor;
 
 public class EmotionalFlexibleCounselor extends EmotionalCounselor {
-    public EmotionalFlexibleCounselor(String name) {
-        super(name);
+    public EmotionalFlexibleCounselor(String name, ConsultTask task) {
+        super(name, task);
     }
     public void askSecondQuestion() {
         System.out.println("지금 당장 하고 싶은 일이 있나요?");

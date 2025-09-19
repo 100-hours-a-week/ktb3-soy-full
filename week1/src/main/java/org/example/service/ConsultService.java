@@ -69,7 +69,6 @@ public class ConsultService {
         }
     }
 
-
     public void closeProgram() {
         System.out.println("저희 프로그램을 찾아주셔서 감사합니다.");
         System.out.println("다음에 고민거리가 생긴다면 언제든 저희를 찾아주세요.");
@@ -91,16 +90,17 @@ public class ConsultService {
 
     public Counselor getCounselor(){
         Counselor counselor = null;
+        ConsultTask task = new ConsultTask();
         String counselorName = getCounselorName();
 
         if (counselorName.equals("bri")) {
-            counselor = new RationalOrganizedCounselor(counselorName);
+            counselor = new RationalOrganizedCounselor(counselorName, task);
         } else if (counselorName.equals("ana")) {
-            counselor = new RationalFlexibleCounselor(counselorName);
+            counselor = new RationalFlexibleCounselor(counselorName, task);
         } else if (counselorName.equals("zen")) {
-            counselor = new EmotionalFlexibleCounselor(counselorName);
+            counselor = new EmotionalFlexibleCounselor(counselorName, task);
         } else if (counselorName.equals("dva")) {
-            counselor = new EmotionalOrganizedCounselor(counselorName);
+            counselor = new EmotionalOrganizedCounselor(counselorName, task);
         }
 
         return counselor;

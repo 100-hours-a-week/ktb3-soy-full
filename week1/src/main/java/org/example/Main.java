@@ -20,15 +20,9 @@ public class Main {
 
             boolean isSatisfied = consultService.evaluateService();
             if (isSatisfied) break;
-
         }
 
         consultService.closeProgram();
 
     }
-
-
-
-
-
 }

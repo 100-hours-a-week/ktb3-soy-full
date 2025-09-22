@@ -124,4 +124,22 @@ public class ConsultService {
         return counselor;
     }
 
+    public void consultService(){
+        singThread.start();
+        while (true) {
+            if (!isPossibleToConsult()) break;
+            Counselor counselor = getCounselor();
+            try{
+                counselor.consult();
+            } catch (NullPointerException | InterruptedException e){
+                System.out.println(e.getMessage() + " counselor null 입니다.");
+            }
+
+            boolean isSatisfied = evaluateService();
+            if (isSatisfied) break;
+        }
+        singThread.interrupt();
+        closeProgram();
+    }
+
 }

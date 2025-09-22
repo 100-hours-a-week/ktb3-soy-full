@@ -9,6 +9,8 @@ public class ConsultService {
     private InputHandler handler = new InputHandler();
     public HashMap<String, Boolean> counselorList = new HashMap<>();
     public static final boolean hasDone = false;
+    public static final int MILISECONDS = 1000;
+    public static Thread singThread;
 
     public ConsultService(){
         counselorList.put("bri", hasDone);
@@ -20,7 +22,23 @@ public class ConsultService {
     public void introduce(){
         introduceProgram();
         introduceCounselor();
+        introduceSingService();
     }
+
+    private void introduceSingService(){
+        System.out.println("저희는 노래 서비스도 제공합니다!");
+        System.out.println("몇 초 간격으로 노래를 불러드릴까요?");
+        System.out.println("흥이 많으시다면 1초 / 흥이 적당하다면 5초 / 흥이 적다면 10초 중 선택해주세요.");
+        System.out.println("숫자만 입력해주세요!!");
+        setServiceTime();
+    }
+
+    private void setServiceTime(){
+        int singServiceTime = handler.getServiceTime();
+        SingTask singTask = new SingTask(singServiceTime * MILISECONDS);
+        singThread = new Thread(singTask);
+    }
+
     private void introduceProgram() {
         System.out.println("고민이 있나요? 어떻게 해결하면 좋을지 알듯 말듯 잘 모르시겠나요?");
         System.out.println("잘 오셨습니다. 이곳의 멋진 상담사분들과 함께 때론 명쾌하고 때론 따뜻하게 문제를 풀어보아요.");
@@ -69,7 +87,6 @@ public class ConsultService {
         }
     }
 
-
     public void closeProgram() {
         System.out.println("저희 프로그램을 찾아주셔서 감사합니다.");
         System.out.println("다음에 고민거리가 생긴다면 언제든 저희를 찾아주세요.");
@@ -91,19 +108,38 @@ public class ConsultService {
 
     public Counselor getCounselor(){
         Counselor counselor = null;
+        ConsultTask task = new ConsultTask();
         String counselorName = getCounselorName();
 
         if (counselorName.equals("bri")) {
-            counselor = new RationalOrganizedCounselor(counselorName);
+            counselor = new RationalOrganizedCounselor(counselorName, task);
         } else if (counselorName.equals("ana")) {
-            counselor = new RationalFlexibleCounselor(counselorName);
+            counselor = new RationalFlexibleCounselor(counselorName, task);
         } else if (counselorName.equals("zen")) {
-            counselor = new EmotionalFlexibleCounselor(counselorName);
+            counselor = new EmotionalFlexibleCounselor(counselorName, task);
         } else if (counselorName.equals("dva")) {
-            counselor = new EmotionalOrganizedCounselor(counselorName);
+            counselor = new EmotionalOrganizedCounselor(counselorName, task);
         }
 
         return counselor;
+    }
+
+    public void consultService(){
+        singThread.start();
+        while (true) {
+            if (!isPossibleToConsult()) break;
+            Counselor counselor = getCounselor();
+            try{
+                counselor.consult();
+            } catch (NullPointerException | InterruptedException e){
+                System.out.println(e.getMessage() + " counselor null 입니다.");
+            }
+
+            boolean isSatisfied = evaluateService();
+            if (isSatisfied) break;
+        }
+        singThread.interrupt();
+        closeProgram();
     }
 
 }

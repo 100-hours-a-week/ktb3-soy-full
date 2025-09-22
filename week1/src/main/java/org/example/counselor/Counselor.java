@@ -1,15 +1,17 @@
 package org.example.counselor;
 import org.example.utility.InputHandler;
 
-public class Counselor {
+public class Counselor extends Thread{
     public String name;
+    public ConsultTask task;
     public InputHandler inputHandler = new InputHandler();
     public static final String YES = "y";
     public static final String NO = "n";
     public static final int deadlineLimitDays = 7;
 
-    public Counselor(String name){
+    public Counselor(String name, ConsultTask task){
         this.name = name;
+        this.task = task;
         this.sayHello();
     }
 

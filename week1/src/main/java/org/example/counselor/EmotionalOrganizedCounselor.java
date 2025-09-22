@@ -1,8 +1,8 @@
 package org.example.counselor;
 
 public class EmotionalOrganizedCounselor extends EmotionalCounselor {
-    public EmotionalOrganizedCounselor(String name) {
-        super(name);
+    public EmotionalOrganizedCounselor(String name, ConsultTask task) {
+        super(name, task);
     }
 
     public void askSecondQuestion(){

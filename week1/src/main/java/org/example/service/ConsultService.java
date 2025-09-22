@@ -108,17 +108,16 @@ public class ConsultService {
 
     public Counselor getCounselor(){
         Counselor counselor = null;
-        ConsultTask task = new ConsultTask();
         String counselorName = getCounselorName();
 
         if (counselorName.equals("bri")) {
-            counselor = new RationalOrganizedCounselor(counselorName, task);
+            counselor = new RationalOrganizedCounselor(counselorName);
         } else if (counselorName.equals("ana")) {
-            counselor = new RationalFlexibleCounselor(counselorName, task);
+            counselor = new RationalFlexibleCounselor(counselorName);
         } else if (counselorName.equals("zen")) {
-            counselor = new EmotionalFlexibleCounselor(counselorName, task);
+            counselor = new EmotionalFlexibleCounselor(counselorName);
         } else if (counselorName.equals("dva")) {
-            counselor = new EmotionalOrganizedCounselor(counselorName, task);
+            counselor = new EmotionalOrganizedCounselor(counselorName);
         }
 
         return counselor;
@@ -131,8 +130,10 @@ public class ConsultService {
             Counselor counselor = getCounselor();
             try{
                 counselor.consult();
-            } catch (NullPointerException | InterruptedException e){
+            } catch (NullPointerException e){
                 System.out.println(e.getMessage() + " counselor null 입니다.");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
             boolean isSatisfied = evaluateService();

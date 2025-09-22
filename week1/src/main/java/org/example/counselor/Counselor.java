@@ -1,17 +1,15 @@
 package org.example.counselor;
 import org.example.utility.InputHandler;
 
-public class Counselor extends Thread{
+public class Counselor{
     public String name;
-    public ConsultTask task;
     public InputHandler inputHandler = new InputHandler();
     public static final String YES = "y";
     public static final String NO = "n";
     public static final int deadlineLimitDays = 7;
 
-    public Counselor(String name, ConsultTask task){
+    public Counselor(String name){
         this.name = name;
-        this.task = task;
         this.sayHello();
     }
 
@@ -29,5 +27,6 @@ public class Counselor extends Thread{
         System.out.println("생각 완료!");
     }
 
-    public void consult() throws InterruptedException {}
+    public void consult() throws InterruptedException {
+    }
 }

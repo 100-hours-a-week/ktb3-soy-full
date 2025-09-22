@@ -8,7 +8,9 @@ public class Main {
 
         ConsultService consultService = new ConsultService();
         consultService.introduce();
+        consultService.singThread.start();
 
+        // todo 이거 consultService 안에 넣기
         while (true) {
             if (!consultService.isPossibleToConsult()) break;
             Counselor counselor = consultService.getCounselor();
@@ -22,6 +24,7 @@ public class Main {
             if (isSatisfied) break;
         }
 
+        consultService.singThread.interrupt();
         consultService.closeProgram();
 
     }

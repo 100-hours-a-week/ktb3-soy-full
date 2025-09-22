@@ -9,6 +9,8 @@ public class ConsultService {
     private InputHandler handler = new InputHandler();
     public HashMap<String, Boolean> counselorList = new HashMap<>();
     public static final boolean hasDone = false;
+    public static final int MILISECONDS = 1000;
+    public static Thread singThread;
 
     public ConsultService(){
         counselorList.put("bri", hasDone);
@@ -20,7 +22,23 @@ public class ConsultService {
     public void introduce(){
         introduceProgram();
         introduceCounselor();
+        introduceSingService();
     }
+
+    private void introduceSingService(){
+        System.out.println("저희는 노래 서비스도 제공합니다!");
+        System.out.println("몇 초 간격으로 노래를 불러드릴까요?");
+        System.out.println("흥이 많으시다면 1초 / 흥이 적당하다면 5초 / 흥이 적다면 10초 중 선택해주세요.");
+        System.out.println("숫자만 입력해주세요!!");
+        setServiceTime();
+    }
+
+    private void setServiceTime(){
+        int singServiceTime = handler.getServiceTime();
+        SingTask singTask = new SingTask(singServiceTime * MILISECONDS);
+        singThread = new Thread(singTask);
+    }
+
     private void introduceProgram() {
         System.out.println("고민이 있나요? 어떻게 해결하면 좋을지 알듯 말듯 잘 모르시겠나요?");
         System.out.println("잘 오셨습니다. 이곳의 멋진 상담사분들과 함께 때론 명쾌하고 때론 따뜻하게 문제를 풀어보아요.");

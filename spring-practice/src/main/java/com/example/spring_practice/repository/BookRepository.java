@@ -26,7 +26,7 @@ public class BookRepository {
 
     public void save(BookDto book){
         if (book.getId() == null){
-            book.setId(sequence++);
+            book.setId(++sequence);
         }
         bookDtoMap.put(book.getId(), book);
     }

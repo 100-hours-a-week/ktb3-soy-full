@@ -17,6 +17,13 @@ public class BookDto {
         this.isbn = isbn;
     }
 
+    public BookDto(String title, String author, String description, String isbn) {
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.isbn = isbn;
+    }
+
     public Long getId() {return this.id;}
     public void setId(Long id) {this.id = id;}
     public String getTitle() {return this.title;}
@@ -29,6 +36,6 @@ public class BookDto {
     public void setIsbn(String isbn) {this.isbn = isbn;}
     @Override
     public String toString() {
-        return String.format("Book title[%s] written by [%s] is about [%s]", this.title, this.author, this.description);
+        return String.format("[%d] Book title[%s] written by [%s] is about [%s]", this.id, this.title, this.author, this.description);
     }
 }

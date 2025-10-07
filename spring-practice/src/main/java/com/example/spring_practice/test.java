@@ -2,6 +2,7 @@ package com.example.spring_practice;
 
 import com.example.spring_practice.dto.BookDto;
 import com.example.spring_practice.repository.BookRepository;
+import com.example.spring_practice.service.BookService;
 
 public class test {
     public static void main(String[] args) {
@@ -11,6 +12,16 @@ public class test {
         bookRepository.save(bookDto);
         System.out.println(bookRepository.findAll());
         System.out.println(bookDto.getId());
+
+        BookService bookService = new BookService(bookRepository);
+        bookService.createBook(new BookDto(
+                "hi",
+                "h",
+                "s",
+                "s"
+        ));
+
+        System.out.println(bookRepository.findAll());
     }
 
 

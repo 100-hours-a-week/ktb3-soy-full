@@ -31,7 +31,7 @@ public class BookController {
         return "/books/detail";
     }
 
-    @GetMapping("/form")
+    @GetMapping("/new")
     public String getNewBook(Model model){
         model.addAttribute("bookDto", new BookDto());
         return "/books/form";

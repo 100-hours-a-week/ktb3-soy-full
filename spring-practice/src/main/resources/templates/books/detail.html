@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="<http://www.thymeleaf.org>">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+<body>
+<h1 th:text = "${book.title}">title</h1>
+<h2 th:text = "${book.author}">author</h2>
+<h2 th:text = "${book.description}">description</h2>
+<h3> <a th:href="@{/books}">되돌아가기</a></h3>
+</body>
+</html>

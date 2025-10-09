@@ -1,4 +1,4 @@
 package com.example.community.service;
 
-public class UserService {
+public class SignUpService {
 }

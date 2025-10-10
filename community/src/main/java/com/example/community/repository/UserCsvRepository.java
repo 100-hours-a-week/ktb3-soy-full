@@ -93,6 +93,7 @@ public class UserCsvRepository implements UserRepository {
 
     public void editPassword(UserEntity userEntity, String newPassword) {
         userEntity.setUserPassword(newPassword);
+        userStore.put(userEntity.getUserId(), userEntity);
     }
 
     public void editProfile(UserEntity userEntity, String newNickname, String newProfileImgUrl) {
@@ -100,7 +101,12 @@ public class UserCsvRepository implements UserRepository {
             userEntity.setUserProfileImgUrl(newProfileImgUrl);
         }
         userEntity.setUserNickname(newNickname);
+        userStore.put(userEntity.getUserId(), userEntity);
     }
 
+    public void softDelete(UserEntity userEntity) {
+        userEntity.setUserIsDeleted(true);
+        userStore.put(userEntity.getUserId(), userEntity);
+    }
 
 }

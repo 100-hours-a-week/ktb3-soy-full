@@ -90,4 +90,8 @@ public class UserCsvRepository implements UserRepository {
 
         userStore.put(userEntity.getUserId(), userEntity);
     }
+
+    public void editPassword(UserEntity userEntity, String newPassword) {
+        userEntity.setUserPassword(newPassword);
+    }
 }

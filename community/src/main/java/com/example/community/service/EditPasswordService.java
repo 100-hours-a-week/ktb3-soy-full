@@ -47,7 +47,7 @@ public class EditPasswordService {
         userCsvRepository.editPassword(userEntity, newPassword);
 
         return new SimpleResponse(
-                userEntity.getUserEmail(),
+                userEntity.getUserId(),
                 userEntity.getUserNickname()
         );
     }

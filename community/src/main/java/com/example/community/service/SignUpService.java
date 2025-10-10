@@ -38,8 +38,11 @@ public class SignUpService {
     }
 
     private boolean isNicknameExist(String nickname) {
-        List<UserEntity> listWithSameNickname = repository.findByNickname(nickname);
-        return listWithSameNickname.size() > 0;
+        UserEntity userEntity = repository.findByNickname(nickname)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "존재하지 않는 닉네임입니다."
+                ));
+        return true;
     }
 
     public SignUpResponse signup(SignUpRequest signUpRequest) {

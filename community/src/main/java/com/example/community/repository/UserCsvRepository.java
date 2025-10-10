@@ -64,10 +64,10 @@ public class UserCsvRepository implements UserRepository {
         return Optional.ofNullable(userStore.get(id));
     }
 
-    public List<UserEntity> findByNickname(String nickname) {
+    public Optional<UserEntity> findByNickname(String nickname) {
         return userStore.values().stream()
                 .filter(item -> item.getUserNickname().equals(nickname))
-                .collect(Collectors.toList());
+                .findAny();
     }
 
     public Optional<UserEntity> findByEmail(String email) {
@@ -94,4 +94,13 @@ public class UserCsvRepository implements UserRepository {
     public void editPassword(UserEntity userEntity, String newPassword) {
         userEntity.setUserPassword(newPassword);
     }
+
+    public void editProfile(UserEntity userEntity, String newNickname, String newProfileImgUrl) {
+        if (!(newProfileImgUrl == null || newProfileImgUrl.isEmpty())) {
+            userEntity.setUserProfileImgUrl(newProfileImgUrl);
+        }
+        userEntity.setUserNickname(newNickname);
+    }
+
+
 }

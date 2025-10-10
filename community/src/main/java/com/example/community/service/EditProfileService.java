@@ -32,13 +32,9 @@ public class EditProfileService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "존재하는 닉네임입니다.");
         }
 
-
-        if (newProfileImgUrl != null){
-            if (newProfileImgUrl.equals(userEntity.getUserProfileImgUrl())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "이전 프로필 사진과 동일합니다.");
-            }
+        if (newProfileImgUrl != "" & newProfileImgUrl.equals(userEntity.getUserProfileImgUrl())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이전 프로필 사진과 동일합니다.");
         }
-
 
         userCsvRepository.editProfile(
                 userEntity,

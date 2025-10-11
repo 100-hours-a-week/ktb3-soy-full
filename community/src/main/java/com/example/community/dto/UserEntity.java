@@ -39,6 +39,10 @@ public class UserEntity {
     public String getUserDeletedAt() {return this.userDeletedAt;}
     public void setUserDeletedAt(String userDeletedAt) {this.userDeletedAt = userDeletedAt;}
 
+    public boolean isPasswordMatch(String givenPassword) {
+        return this.userPassword.equals(givenPassword);
+    }
+
     @Override
     public String toString() {
         return "%d %s %s %s %s %s %s".formatted(userId, userEmail, userPassword, userNickname, userProfileImgUrl, userCreatedAt, userDeletedAt);

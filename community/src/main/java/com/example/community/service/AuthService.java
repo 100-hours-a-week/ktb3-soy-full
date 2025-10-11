@@ -32,7 +32,7 @@ public class AuthService {
         return "refreshTokenTest";
     }
 
-    private String[] getTimestamp(){
+    private String[] getIssueAndExpirationTimes(){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         return new String[]{dtf.format(now), dtf.format(now.plusDays(7))};
@@ -42,27 +42,31 @@ public class AuthService {
         Map<String,String> authInfoMap = new HashMap<>();
         authInfoMap.put("accessToken",getAccessToken());
         authInfoMap.put("refreshToken",getRefreshToken());
-        String[] timestamp = getTimestamp();
+        String[] timestamp = getIssueAndExpirationTimes();
         authInfoMap.put("issuedAt",timestamp[0]);
         authInfoMap.put("expiresIn",timestamp[1]);
         return authInfoMap;
+    }
+
+    public UserEntity findUserByEmail(String email){
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "존재하지 않는 이메일입니다."
+                ));
+    }
+
+    public void verifyPassword(UserEntity userEntity, String givenPassword){
+        if(!userEntity.isPasswordMatch(givenPassword)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+        }
     }
 
     public SignInResponse signIn(SignInRequest signInRequest) {
 
         String email = signInRequest.getUserEmail();
         String password = signInRequest.getUserPassword();
-
-        UserEntity userEntity = repository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."
-                ));
-
-        if(!userEntity.getUserPassword().equals(password)){
-            throw new UserUnauthorizedException("비밀번호가 다릅니다.");
-        };
-
-
+        UserEntity userEntity = findUserByEmail(email);
+        verifyPassword(userEntity, password);
         Map<String,String> authInfoMap = getAuthInfoMap();
 
         return new SignInResponse(

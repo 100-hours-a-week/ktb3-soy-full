@@ -80,14 +80,6 @@ public class UserCsvRepository implements UserRepository {
     public void save(UserEntity userEntity) {
         long userNextId = sequence.incrementAndGet();
         userEntity.setUserId(userNextId);
-
-        if (userEntity.getUserEmail() == null || userEntity.getUserEmail().isEmpty() ||
-                userEntity.getUserPassword() == null || userEntity.getUserPassword().isEmpty() ||
-                userEntity.getUserNickname() == null || userEntity.getUserNickname().isEmpty() ||
-                userEntity.getUserProfileImgUrl() == null || userEntity.getUserProfileImgUrl().isEmpty()) {
-            throw new IllegalArgumentException("Email or password or nickname or profile img url is null");
-        }
-
         userStore.put(userEntity.getUserId(), userEntity);
     }
 

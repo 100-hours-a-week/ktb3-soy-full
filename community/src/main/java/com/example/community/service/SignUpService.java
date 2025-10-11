@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 public class SignUpService {
@@ -23,38 +22,34 @@ public class SignUpService {
         this.repository = userCsvRepository;
     }
 
-    private String getNowTime(){
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private String getCreatedAt(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         LocalDateTime now = LocalDateTime.now();
         return dtf.format(now);
     }
 
     private boolean isEmailExist(String email) {
-        UserEntity userEntity = repository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "존재하지 않는 이메일입니다."
-                ));
-        return true;
+        return repository.findByEmail(email).isPresent();
     }
 
     private boolean isNicknameExist(String nickname) {
-        UserEntity userEntity = repository.findByNickname(nickname)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "존재하지 않는 닉네임입니다."
-                ));
-        return true;
+        return repository.findByNickname(nickname).isPresent();
+    }
+
+    private String checkAndSetProfileImage(String profileImgUrl) {
+        if (profileImgUrl.equals("")) {
+            return DEFAULT_PROFILE_IMG;
+        } else {
+            return profileImgUrl;
+        }
     }
 
     public SignUpResponse signup(SignUpRequest signUpRequest) {
         String email = signUpRequest.getUserEmail();
         String password = signUpRequest.getUserPassword();
         String nickname = signUpRequest.getUserNickname();
-        String profileImgUrl = signUpRequest.getUserProfileImgUrl();
-        String createdAt = getNowTime();
-
-        if (profileImgUrl == null || profileImgUrl.equals("")) {
-            profileImgUrl = DEFAULT_PROFILE_IMG;
-        }
+        String profileImgUrl = checkAndSetProfileImage(signUpRequest.getUserProfileImgUrl());
+        String createdAt = getCreatedAt();
 
         nickname = nickname.trim();
         password = password.trim();

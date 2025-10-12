@@ -1,12 +1,11 @@
-package com.example.community.service;
+package com.example.community.service.users;
 
-import com.example.community.dto.EditProfileRequest;
-import com.example.community.dto.SimpleResponse;
-import com.example.community.dto.UserEntity;
-import com.example.community.repository.UserCsvRepository;
+import com.example.community.dto.users.EditProfileRequest;
+import com.example.community.dto.users.SimpleResponse;
+import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.users.UserCsvRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service

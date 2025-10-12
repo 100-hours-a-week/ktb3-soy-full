@@ -1,9 +1,9 @@
-package com.example.community.service;
+package com.example.community.service.users;
 
-import com.example.community.dto.SignUpRequest;
-import com.example.community.dto.SignUpResponse;
-import com.example.community.dto.UserEntity;
-import com.example.community.repository.UserCsvRepository;
+import com.example.community.dto.users.SignUpRequest;
+import com.example.community.dto.users.SignUpResponse;
+import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.users.UserCsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

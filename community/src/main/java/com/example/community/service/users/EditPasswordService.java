@@ -1,17 +1,13 @@
-package com.example.community.service;
+package com.example.community.service.users;
 
-import com.example.community.dto.EditPasswordRequest;
-import com.example.community.dto.SimpleResponse;
-import com.example.community.dto.UserEntity;
-import com.example.community.repository.UserCsvRepository;
-import com.example.community.repository.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.coyote.Response;
+import com.example.community.dto.users.EditPasswordRequest;
+import com.example.community.dto.users.SimpleResponse;
+import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.users.UserCsvRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 

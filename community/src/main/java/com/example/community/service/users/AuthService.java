@@ -1,10 +1,9 @@
-package com.example.community.service;
+package com.example.community.service.users;
 
-import com.example.community.dto.SignInRequest;
-import com.example.community.dto.SignInResponse;
-import com.example.community.dto.UserEntity;
-import com.example.community.exception.UserUnauthorizedException;
-import com.example.community.repository.UserCsvRepository;
+import com.example.community.dto.users.SignInRequest;
+import com.example.community.dto.users.SignInResponse;
+import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.users.UserCsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -46,6 +46,11 @@ public class AuthService {
         authInfoMap.put("issuedAt",timestamp[0]);
         authInfoMap.put("expiresIn",timestamp[1]);
         return authInfoMap;
+    }
+
+    public List<UserEntity> findUserByIds(List<Long> ids){
+        // Change findById to findAllById
+        return repository.findAllById(ids);
     }
 
     public UserEntity findUserByEmail(String email){

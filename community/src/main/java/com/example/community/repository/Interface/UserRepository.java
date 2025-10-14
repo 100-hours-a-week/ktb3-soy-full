@@ -1,6 +1,6 @@
-package com.example.community.repository;
+package com.example.community.repository.Interface;
 
-import com.example.community.dto.UserEntity;
+import com.example.community.dto.users.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Optional;

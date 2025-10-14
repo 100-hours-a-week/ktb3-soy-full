@@ -1,7 +1,7 @@
 package com.example.community.exceptionHandler;
 
-import com.example.community.exception.UserNotFoundException;
-import com.example.community.exception.UserUnauthorizedException;
+import com.example.community.exception.users.UserNotFoundException;
+import com.example.community.exception.users.UserUnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

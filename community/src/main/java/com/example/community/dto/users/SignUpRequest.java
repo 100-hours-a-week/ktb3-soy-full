@@ -1,7 +1,5 @@
-package com.example.community.dto;
-import jakarta.validation.constraints.Email;
+package com.example.community.dto.users;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;

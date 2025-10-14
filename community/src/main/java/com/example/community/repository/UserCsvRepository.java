@@ -1,5 +1,6 @@
 package com.example.community.repository;
-import com.example.community.dto.UserEntity;
+import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.Interface.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
@@ -64,6 +65,15 @@ public class UserCsvRepository implements UserRepository {
         return Optional.ofNullable(userStore.get(id));
     }
 
+    public Optional<UserEntity> findNotDeletedById(Long id) {
+        UserEntity userEntity = userStore.get(id);
+        if (userEntity != null && !userEntity.getUserIsDeleted()){
+            return Optional.of(userEntity);
+        }
+        return Optional.empty();
+    }
+
+
     public Optional<UserEntity> findByNickname(String nickname) {
         return userStore.values().stream()
                 .filter(item -> item.getUserNickname().equals(nickname))
@@ -101,4 +111,9 @@ public class UserCsvRepository implements UserRepository {
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
+    public List<UserEntity> findAllById(List<Long> ids) {
+        return userStore.values().stream().filter(
+                item -> ids.contains(item.getUserId())
+        ).collect(Collectors.toList());
+    }
 }

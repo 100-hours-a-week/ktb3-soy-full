@@ -1,10 +1,22 @@
 package com.example.community.dto.posts;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class PostCreateRequest {
+    @NotBlank
     private String postTitle;
+    @NotBlank
     private String postContent;
+
     private String postImageUrl;
     public PostCreateRequest() {}
+
+    public PostCreateRequest(String postTitle, String postContent) {
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+        this.postImageUrl = "";
+    }
+
     public PostCreateRequest(String postTitle, String postContent, String postImageUrl) {
         this.postTitle = postTitle;
         this.postContent = postContent;

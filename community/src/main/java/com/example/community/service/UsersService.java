@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.community.Util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Service
 public class UsersService {
+    Util util = new Util();
     private UserCsvRepository repository;
     @Autowired
     public UsersService(UserCsvRepository userCsvRepository) {
@@ -22,12 +24,6 @@ public class UsersService {
     }
 
     private static final String DEFAULT_PROFILE_IMG = "src/main/resources/images/defaultProfile.jpg";
-
-    private String getCreatedAt(){
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
 
     private boolean isEmailExist(String email) {
         return repository.findByEmail(email).isPresent();
@@ -50,7 +46,7 @@ public class UsersService {
         String password = signUpRequest.getUserPassword();
         String nickname = signUpRequest.getUserNickname();
         String profileImgUrl = checkAndSetProfileImage(signUpRequest.getUserProfileImgUrl());
-        String createdAt = getCreatedAt();
+        String createdAt = util.getCreatedAt();
 
         nickname = nickname.trim();
         password = password.trim();

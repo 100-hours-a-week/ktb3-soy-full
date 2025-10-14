@@ -1,7 +1,12 @@
 package com.example.community;
 
-public class Utility {
-    public String getCreatedAt() {
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+public class Util {
+    public String getCreatedAt(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
 }

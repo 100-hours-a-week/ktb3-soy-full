@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.dto.users;
 
 public class SignInResponse {
     private String userEmail;

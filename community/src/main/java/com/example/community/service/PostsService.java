@@ -1,6 +1,6 @@
 package com.example.community.service;
 
-import com.example.community.application.posts.PostDetailAssembler;
+import com.example.community.application.posts.PostAssembler;
 import com.example.community.dto.posts.*;
 import com.example.community.dto.users.UserEntity;
 import com.example.community.repository.PostCsvRepository;
@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 public class PostsService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
-    private PostDetailAssembler postDetailAssembler = new PostDetailAssembler();
+    private PostAssembler postAssembler = new PostAssembler();
+    private static final String DEFAULT_POST_IMG = "src/main/resources/images/defaultProfile.jpg";
+
 
     @Autowired
     public PostsService(PostCsvRepository postCsvRepository, UserCsvRepository userCsvRepository) {
@@ -37,7 +39,7 @@ public class PostsService {
         UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
         verifyUser(writerEntity);
-        PostDetailResponse poseDetailResponse = postDetailAssembler.toPublicdetailResponse(postEntity, writerEntity);
+        PostDetailResponse poseDetailResponse = postAssembler.toPublicdetailResponse(postEntity, writerEntity);
         return poseDetailResponse;
     }
 
@@ -63,7 +65,7 @@ public class PostsService {
         for (int index = 0; index<postEntityList.size(); index++) {
             UserEntity user = userCsvRepository.findById(writerIds.get(index)).get();
             PostEntity paginatedPost = postEntityList.get(index);
-            PostItemResponse postItemResponse = postItemAssembler.toPostItemResponse(paginatedPost, user);
+            PostItemResponse postItemResponse = postAssembler.toPostItemResponse(paginatedPost, user);
             postItemResponseList.add(postItemResponse);
         }
 
@@ -95,6 +97,79 @@ public class PostsService {
                 postItemResponseList,
                 pagingMetaResponse
         );
-
     }
+
+    public PostCreateResponse createPost(Long userId, PostCreateRequest postCreateRequest) {
+        if (postCreateRequest.getPostImageUrl() == ""){
+            postCreateRequest.setPostImageUrl(DEFAULT_POST_IMG);
+        }
+
+        UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "게시글을 작성할 수 없습니다."));
+
+        PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
+        int postId = postCsvRepository.savePost(postEntity);
+        return PostCreateResponse.of(postId);
+    }
+
+    public void validatePostEditRequest(PostEditRequest postEditRequest) {
+        if((postEditRequest.getPostTitle()==null || postEditRequest.getPostTitle().isEmpty()) &&
+                (postEditRequest.getPostContent()==null || postEditRequest.getPostContent().isEmpty()) &&
+                (postEditRequest.getPostImageUrl()==null || postEditRequest.getPostImageUrl().isEmpty())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 내용이 없습니다.");
+        }
+    }
+
+    public void editPostTitle(PostEntity postEntity, String newTitle) {
+        if (newTitle != null & newTitle != ""){
+            postEntity.setPostTitle(newTitle);
+        }
+    }
+
+    public void editPostContent(PostEntity postEntity, String newContent) {
+        if (newContent != null & newContent != ""){
+            postEntity.setPostContent(newContent);
+        }
+    }
+
+    public void editPostImgUrl(PostEntity postEntity, String newImageUrl) {
+        if (newImageUrl != null & newImageUrl != ""){
+            postEntity.setPostImgUrl(newImageUrl);
+        }
+    }
+
+    public void ensureUserIsPostWriter(Long postWriterId, Long userId){
+        if (postWriterId != userId){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "접근할 수 없는 게시글입니다.");
+        }
+    }
+
+    public SimpleResponse editPost(int postId, Long userId, PostEditRequest postEditRequest) {
+        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
+        validatePostEditRequest(postEditRequest);
+        editPostTitle(postEntity, postEditRequest.getPostTitle());
+        editPostContent(postEntity, postEditRequest.getPostContent());
+        editPostImgUrl(postEntity, postEditRequest.getPostImageUrl());
+        postCsvRepository.updatePost(postEntity);
+        return SimpleResponse.of(
+                "게시글 수정이 완료되었습니다." ,
+                postId);
+    }
+
+    public SimpleResponse deletePost(int postId, Long userId) {
+        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
+        postCsvRepository.deletePost(postId);
+        return SimpleResponse.of(
+                "게시글 삭제를 완료하였습니다.",
+                postId
+        );
+    }
+
+    public SimpleResponse likePost(int postId, Long userId) {
+        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
+    }
+
 }

@@ -82,8 +82,17 @@ public class PostCsvRepository {
         return postStore.get(postId);
     }
 
-    public void savePost(PostEntity postEntity){
+    public int savePost(PostEntity postEntity){
         postEntity.setPostId(sequence.getAndIncrement());
         postStore.put(postEntity.getPostId(), postEntity);
+        return postEntity.getPostId();
+    }
+
+    public void updatePost(PostEntity postEntity){
+        postStore.put(postEntity.getPostId(), postEntity);
+    }
+
+    public void deletePost(int postId){
+        postStore.remove(postId);
     }
 }

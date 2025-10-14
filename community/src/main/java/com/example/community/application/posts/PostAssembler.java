@@ -3,10 +3,10 @@ package com.example.community.application.posts;
 import com.example.community.dto.posts.*;
 import com.example.community.dto.users.UserEntity;
 import com.example.community.dto.users.WriterSummary;
-import com.example.community.Util;
+import com.example.community.Utility;
 
 public class PostAssembler {
-    Util util = new Util();
+    Utility util = new Utility();
     public PostAssembler(){}
     public PostEntity toEntity(PostCreateRequest postCreateRequest, Long userId) {
         PostEntity postEntity = new PostEntity();
@@ -14,9 +14,9 @@ public class PostAssembler {
         postEntity.setPostContent(postCreateRequest.getPostContent());
         postEntity.setPostImgUrl(postCreateRequest.getPostImageUrl());
         postEntity.setPostWriterId(userId);
-        postEntity.setPostLikeCounts(0);
-        postEntity.setPostCommentCounts(0);
-        postEntity.setPostViewCounts(0);
+        postEntity.setPostLikeCounts(0L);
+        postEntity.setPostCommentCounts(0L);
+        postEntity.setPostViewCounts(0L);
         postEntity.setPostCreatedAt(util.getCreatedAt());
         return postEntity;
     }

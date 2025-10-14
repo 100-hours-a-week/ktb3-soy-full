@@ -1,6 +1,6 @@
 package com.example.community.service;
 
-import com.example.community.application.posts.PostAssembler;
+import com.example.community.application.PostAssembler;
 import com.example.community.dto.posts.*;
 import com.example.community.dto.users.UserEntity;
 import com.example.community.repository.PostCsvRepository;
@@ -35,8 +35,15 @@ public class PostsService {
         }
     }
 
+    public void validatePost(Long postId) {
+        if (!postCsvRepository.verifyPostId(postId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
+        }
+    }
+
     public PostDetailResponse viewPostDetail(Long postId) {
-        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        validatePost(postId);
+        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
         UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
         verifyUser(writerEntity);
@@ -155,7 +162,8 @@ public class PostsService {
     }
 
     public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
-        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        validatePost(postId);
+        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
         editPostTitle(postEntity, postEditRequest.getPostTitle());
@@ -166,7 +174,8 @@ public class PostsService {
     }
 
     public SimpleResponse deletePost(Long postId, Long userId) {
-        PostEntity postEntity = postCsvRepository.findPostById(postId);
+        validatePost(postId);
+        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         postCsvRepository.deletePost(postId);
         return SimpleResponse.forDeletePost(userId, postId);

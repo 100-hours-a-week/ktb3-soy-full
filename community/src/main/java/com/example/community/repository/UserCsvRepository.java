@@ -55,6 +55,10 @@ public class UserCsvRepository implements UserRepository {
         init();
     }
 
+    public Boolean verifyUser(Long userId){
+        return userStore.containsKey(userId);
+    }
+
     @Override
     public ArrayList<UserEntity> findAll() {
         return new ArrayList<>(userStore.values());

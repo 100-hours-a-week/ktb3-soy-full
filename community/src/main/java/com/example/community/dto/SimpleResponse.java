@@ -29,6 +29,14 @@ public class SimpleResponse {
         return new SimpleResponse("DeletePost", postId, userId);
     }
 
+    public static SimpleResponse forEditComment(Long userId, Long comemntId) {
+        return new SimpleResponse("EditComments", comemntId, userId);
+    }
+
+    public static SimpleResponse forDeleteComment(Long userId, Long comemntId) {
+        return new SimpleResponse("DeleteComments", comemntId, userId);
+    }
+
     public String getUseCase() {return useCase;}
     public void setUseCase(String useCase) {this.useCase = useCase;}
     public Long getPostId() {return postId;}

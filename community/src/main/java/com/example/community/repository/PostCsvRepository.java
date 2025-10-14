@@ -62,15 +62,12 @@ public class PostCsvRepository {
         return sortedPostEntityList.subList(Math.toIntExact(startPageId), Math.toIntExact(endPageId));
     }
 
-    public void verifyPostId(Long postId){
-        if (!postStore.containsKey(postId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
-        }
+    public Boolean verifyPostId(Long postId){
+        return postStore.containsKey(postId);
     }
 
-    public PostEntity findPostById(Long postId){
-        verifyPostId(postId);
-        return postStore.get(postId);
+    public Optional<PostEntity> findPostById(Long postId){
+        return Optional.ofNullable(postStore.get(postId));
     }
 
     public Long savePost(PostEntity postEntity){

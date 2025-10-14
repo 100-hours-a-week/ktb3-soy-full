@@ -18,8 +18,7 @@ import java.util.stream.Stream;
 
 @Repository
 public class PostLikeCsvRepository {
-    public final Map<Long, PostLikeEntity> postLikeStore = new LinkedHashMap<>();
-    private AtomicLong sequence = new AtomicLong(0);
+    public final Map<String, PostLikeEntity> postLikeStore = new LinkedHashMap<>();
     private final String postLikeDbPath = "src/main/resources/data/postLikes.csv";
 
     public PostLikeEntity createPostLikeEntity(String line){
@@ -41,13 +40,13 @@ public class PostLikeCsvRepository {
         bufferedReader.readLine(); // 칼럼행 건너뛰기
         while ((line = bufferedReader.readLine()) != null) {
             PostLikeEntity postLikeEntity = createPostLikeEntity(line);
-            Long id = sequence.incrementAndGet();
+            String id = "%d%d".formatted(postLikeEntity.getPostId(), postLikeEntity.getUserId());
             postLikeStore.put(id, postLikeEntity);
         }
     }
 
     public void likePost(Long postId, Long userId, String createdAt) {
-        Long nextSequence = sequence.incrementAndGet();
+        String nextSequence = "%d%d".formatted(postId,userId);
         postLikeStore.put(nextSequence, new PostLikeEntity(postId, userId, createdAt));
     }
 
@@ -58,6 +57,11 @@ public class PostLikeCsvRepository {
                 postLikeEntity -> postLikeEntity.getUserId().equals(userId)
         ).findAny();
         return entity.isPresent();
+    }
+
+    public void dislikePost(Long postId, Long userId) {
+        String findId = "%d%d".formatted(postId,userId);
+        postLikeStore.remove(findId);
     }
 
 }

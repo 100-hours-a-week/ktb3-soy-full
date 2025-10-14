@@ -102,4 +102,10 @@ public class PostCsvRepository {
         postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
         postStore.put(postId, postEntity);
     }
+
+    public void dislikePost(Long postId){
+        PostEntity postEntity = postStore.get(postId);
+        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() - 1);
+        postStore.put(postId, postEntity);
+    }
 }

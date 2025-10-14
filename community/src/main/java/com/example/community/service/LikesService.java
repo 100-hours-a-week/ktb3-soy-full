@@ -46,11 +46,20 @@ public class LikesService {
         validateUser(userId);
         if (checkUserLikePost(postId, userId)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다.");
-        };
+        }
         postLikeCsvRepository.likePost(postId, userId, utility.getCreatedAt());
         postCsvRepository.likePost(postId);
         return SimpleResponse.forLikePost(postId, userId);
     }
 
+    public SimpleResponse dislikePost(Long postId, Long userId){
+        validateUser(userId);
+        if(!checkUserLikePost(postId, userId)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아하지 않는 게시글입니다.");
+        }
+        postLikeCsvRepository.dislikePost(postId, userId);
+        postCsvRepository.dislikePost(postId);
+        return SimpleResponse.forDislikePost(postId, userId);
+    }
 
 }

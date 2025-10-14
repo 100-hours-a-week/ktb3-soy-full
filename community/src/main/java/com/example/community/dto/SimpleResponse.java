@@ -17,6 +17,10 @@ public class SimpleResponse {
         return new SimpleResponse("LikePost", postId, userId);
     }
 
+    public static SimpleResponse forDislikePost(Long postId, Long userId) {
+        return new SimpleResponse("DislikePost", postId, userId);
+    }
+
     public static SimpleResponse forEditPost(Long userId, Long postId) {
         return new SimpleResponse("EditPost", postId, userId);
     }

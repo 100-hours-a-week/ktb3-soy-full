@@ -3,19 +3,19 @@ package com.example.community.dto.posts;
 import java.time.LocalDateTime;
 
 public class PostEntity {
-    private Integer postId;
+    private Long postId;
     private Long postWriterId;
     private String postTitle;
     private String postContent;
     private String postImgUrl;
-    private Integer postLikeCounts;
-    private Integer postViewCounts;
-    private Integer postCommentCounts;
+    private Long postLikeCounts;
+    private Long postViewCounts;
+    private Long postCommentCounts;
     private String postCreatedAt;
 
     public PostEntity() {}
-    public PostEntity(Integer postId, Long postWriterId, String postTitle, String postContent,
-                      String postImgUrl, Integer postLikeCounts, Integer postViewCounts, Integer postCommentCounts, String postCreatedAt) {
+    public PostEntity(Long postId, Long postWriterId, String postTitle, String postContent,
+                      String postImgUrl, Long postLikeCounts, Long postViewCounts, Long postCommentCounts, String postCreatedAt) {
         this.postId = postId;
         this.postWriterId = postWriterId;
         this.postTitle = postTitle;
@@ -27,8 +27,8 @@ public class PostEntity {
         this.postCreatedAt = postCreatedAt;
     }
 
-    public Integer getPostId() {return postId;}
-    public void setPostId(Integer postId) {this.postId = postId;}
+    public Long getPostId() {return postId;}
+    public void setPostId(Long postId) {this.postId = postId;}
     public Long getPostWriterId() {return postWriterId;}
     public void setPostWriterId(Long postWriterId) {this.postWriterId = postWriterId;}
     public String getPostTitle() {return postTitle;}
@@ -37,12 +37,12 @@ public class PostEntity {
     public void setPostContent(String postContent) {this.postContent = postContent;}
     public String getPostImgUrl() {return postImgUrl;}
     public void setPostImgUrl(String postImgUrl) {this.postImgUrl = postImgUrl;}
-    public Integer getPostLikeCounts() {return postLikeCounts;}
-    public void setPostLikeCounts(Integer postLikeCounts) {this.postLikeCounts = postLikeCounts;}
-    public Integer getPostViewCounts() {return postViewCounts;}
-    public void setPostViewCounts(Integer postViewCounts) {this.postViewCounts = postViewCounts;}
-    public Integer getPostCommentCounts() {return postCommentCounts;}
-    public void setPostCommentCounts(Integer postCommentCounts) {this.postCommentCounts = postCommentCounts;}
+    public Long getPostLikeCounts() {return postLikeCounts;}
+    public void setPostLikeCounts(Long postLikeCounts) {this.postLikeCounts = postLikeCounts;}
+    public Long getPostViewCounts() {return postViewCounts;}
+    public void setPostViewCounts(Long postViewCounts) {this.postViewCounts = postViewCounts;}
+    public Long getPostCommentCounts() {return postCommentCounts;}
+    public void setPostCommentCounts(Long postCommentCounts) {this.postCommentCounts = postCommentCounts;}
     public String getPostCreatedAt() {return postCreatedAt;}
     public void setPostCreatedAt(String postCreatedAt) {this.postCreatedAt = postCreatedAt;}
 

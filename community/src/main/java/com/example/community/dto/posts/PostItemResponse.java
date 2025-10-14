@@ -5,13 +5,13 @@ import com.example.community.dto.users.WriterSummary;
 import java.time.LocalDateTime;
 
 public class PostItemResponse {
-    private int postId;
+    private Long postId;
     private WriterSummary writerSummary;
     private String postTitle;
     private String postCreatedAt;
     private PostCounts postCounts;
 
-    public PostItemResponse(int postId, WriterSummary writerSummary, String postTitle, String postCreatedAt, PostCounts postCounts) {
+    public PostItemResponse(Long postId, WriterSummary writerSummary, String postTitle, String postCreatedAt, PostCounts postCounts) {
         this.postId = postId;
         this.writerSummary = writerSummary;
         this.postTitle = postTitle;
@@ -19,8 +19,8 @@ public class PostItemResponse {
         this.postCreatedAt = postCreatedAt;
     }
 
-    public int getPostId() {return postId;}
-    public void setPostId(int postId) {this.postId = postId;}
+    public Long getPostId() {return postId;}
+    public void setPostId(Long postId) {this.postId = postId;}
     public WriterSummary getWriterSummary() {return writerSummary;}
     public void setWriterSummary(WriterSummary writerSummary) {this.writerSummary = writerSummary;}
     public String getPostTitle() {return postTitle;}

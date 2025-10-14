@@ -1,20 +1,20 @@
 package com.example.community.dto.posts;
 
 public class PostCounts {
-    private int likeCounts;
-    private int commentCounts;
-    private int viewCounts;
+    private Long likeCounts;
+    private Long commentCounts;
+    private Long viewCounts;
 
-    public PostCounts(int likeCounts, int commentCounts, int viewCounts) {
+    public PostCounts(Long likeCounts, Long commentCounts, Long viewCounts) {
         this.likeCounts = likeCounts;
         this.commentCounts = commentCounts;
         this.viewCounts = viewCounts;
     }
 
-    public int getLikeCounts() {return likeCounts;}
-    public void setLikeCounts(int likeCounts) {this.likeCounts = likeCounts;}
-    public int getCommentCounts() {return commentCounts;}
-    public void setCommentCounts(int commentCounts) {this.commentCounts = commentCounts;}
-    public int getViewCounts() {return viewCounts;}
-    public void setViewCounts(int viewCounts) {this.viewCounts = viewCounts;}
+    public Long getLikeCounts() {return likeCounts;}
+    public void setLikeCounts(Long likeCounts) {this.likeCounts = likeCounts;}
+    public Long getCommentCounts() {return commentCounts;}
+    public void setCommentCounts(Long commentCounts) {this.commentCounts = commentCounts;}
+    public Long getViewCounts() {return viewCounts;}
+    public void setViewCounts(Long viewCounts) {this.viewCounts = viewCounts;}
 }

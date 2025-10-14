@@ -4,7 +4,8 @@ import com.example.community.application.posts.PostAssembler;
 import com.example.community.dto.posts.*;
 import com.example.community.dto.users.UserEntity;
 import com.example.community.repository.PostCsvRepository;
-import com.example.community.repository.users.UserCsvRepository;
+import com.example.community.repository.UserCsvRepository;
+import com.example.community.dto.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class PostsService {
         }
     }
 
-    public PostDetailResponse viewPostDetail(int postId) {
+    public PostDetailResponse viewPostDetail(Long postId) {
         PostEntity postEntity = postCsvRepository.findPostById(postId);
         UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
@@ -43,13 +44,12 @@ public class PostsService {
         return poseDetailResponse;
     }
 
-    private int[] getTotalPostsAndPages(int pageSize){
-        int totalPosts = userCsvRepository.userStore.size();
-        int totalPages = (int) Math.ceil((double)totalPosts/(double)pageSize);
-        return new int[]{totalPosts, totalPages};
+    private Long[] getTotalPostsAndPages(Long pageSize){
+        Long totalPosts = (long) userCsvRepository.userStore.size();
+        Long totalPages = (totalPosts + pageSize - 1) / pageSize;
+        return new Long[]{totalPosts, totalPages};
     }
-
-    private void verifyPagination(int totalPosts, int totalPages, int pageNumber, int pageSize) {
+    private void verifyPagination(Long totalPosts, Long totalPages, Long pageNumber, Long pageSize) {
         if (pageSize <= 0 || pageNumber <= 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "페이지 정보를 확인하세요.");
         }
@@ -78,10 +78,10 @@ public class PostsService {
                 .collect(Collectors.toList());
     }
 
-    public PostListResponse viewPostList(int pageNumber, int pageSize) {
-        int[] pageInfo = getTotalPostsAndPages(pageSize); // 서비스 계층으로 바꾸기
-        int totalPosts = pageInfo[0];
-        int totalPages = pageInfo[1];
+    public PostListResponse viewPostList(Long pageNumber, Long pageSize) {
+        Long[] pageInfo = getTotalPostsAndPages(pageSize); // 서비스 계층으로 바꾸기
+        Long totalPosts = pageInfo[0];
+        Long totalPages = pageInfo[1];
 
         verifyPagination(totalPages, totalPosts, pageNumber, pageSize);
 
@@ -108,7 +108,7 @@ public class PostsService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "게시글을 작성할 수 없습니다."));
 
         PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
-        int postId = postCsvRepository.savePost(postEntity);
+        Long postId = postCsvRepository.savePost(postEntity);
         return PostCreateResponse.of(postId);
     }
 
@@ -144,7 +144,7 @@ public class PostsService {
         }
     }
 
-    public SimpleResponse editPost(int postId, Long userId, PostEditRequest postEditRequest) {
+    public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
         PostEntity postEntity = postCsvRepository.findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
@@ -152,24 +152,13 @@ public class PostsService {
         editPostContent(postEntity, postEditRequest.getPostContent());
         editPostImgUrl(postEntity, postEditRequest.getPostImageUrl());
         postCsvRepository.updatePost(postEntity);
-        return SimpleResponse.of(
-                "게시글 수정이 완료되었습니다." ,
-                postId);
+        return SimpleResponse.forEditPost(userId, postId);
     }
 
-    public SimpleResponse deletePost(int postId, Long userId) {
+    public SimpleResponse deletePost(Long postId, Long userId) {
         PostEntity postEntity = postCsvRepository.findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         postCsvRepository.deletePost(postId);
-        return SimpleResponse.of(
-                "게시글 삭제를 완료하였습니다.",
-                postId
-        );
+        return SimpleResponse.forDeletePost(userId, postId);
     }
-
-    public SimpleResponse likePost(int postId, Long userId) {
-        PostEntity postEntity = postCsvRepository.findPostById(postId);
-        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
-    }
-
 }

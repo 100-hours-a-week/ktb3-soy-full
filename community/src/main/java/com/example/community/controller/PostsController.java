@@ -1,5 +1,6 @@
 package com.example.community.controller;
 
+import com.example.community.dto.SimpleResponse;
 import com.example.community.dto.posts.*;
 import com.example.community.service.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,13 @@ public class PostsController {
     }
 
     @GetMapping("/api/posts")
-    public ResponseEntity<PostListResponse> getPostList(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<PostListResponse> getPostList(@RequestParam Long page, @RequestParam Long size) {
         PostListResponse postListResponse = postsService.viewPostList(page, size);
         return ResponseEntity.ok(postListResponse);
     }
 
     @GetMapping("/api/posts/detail/{postId}")
-    public ResponseEntity<PostDetailResponse> getPostDetail(@PathVariable("postId") int postId) {
+    public ResponseEntity<PostDetailResponse> getPostDetail(@PathVariable("postId") Long postId) {
         PostDetailResponse postDetailResponse = postsService.viewPostDetail(postId);
         return ResponseEntity.ok(postDetailResponse);
     }
@@ -37,19 +38,14 @@ public class PostsController {
     }
 
     @PatchMapping("/api/posts/edit/{postId}")
-    public ResponseEntity<SimpleResponse> editPost(@PathVariable("postId") int postId, @RequestParam Long userId, @RequestBody PostEditRequest postEditRequest) {
+    public ResponseEntity<SimpleResponse> editPost(@PathVariable("postId") Long postId, @RequestParam Long userId, @RequestBody PostEditRequest postEditRequest) {
         SimpleResponse simpleResponse = postsService.editPost(postId, userId, postEditRequest);
         return ResponseEntity.ok(simpleResponse);
     }
 
     @DeleteMapping("/api/posts/delete/{postId}")
-    public ResponseEntity<SimpleResponse> deletePost(@PathVariable("postId") int postId, @RequestParam Long userId) {
+    public ResponseEntity<SimpleResponse> deletePost(@PathVariable("postId") Long postId, @RequestParam Long userId) {
         SimpleResponse simpleResponse = postsService.deletePost(postId, userId);
         return ResponseEntity.ok(simpleResponse);
-    }
-
-    @PostMapping("/api/posts/detail/{postId}")
-    public ResponseEntity<SimpleResponse> getPostDetail(@PathVariable("postId") int postId, @RequestParam Long userId) {
-        SimpleResponse simpleResponse = postsService.likePost(postId, userId);
     }
 }

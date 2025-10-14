@@ -1,9 +1,9 @@
 package com.example.community.application.posts;
 
+import com.example.community.Utility;
 import com.example.community.dto.posts.*;
 import com.example.community.dto.users.UserEntity;
 import com.example.community.dto.users.WriterSummary;
-import com.example.community.Utility;
 
 public class PostAssembler {
     Utility util = new Utility();

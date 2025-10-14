@@ -1,4 +1,4 @@
-package com.example.community.repository.users;
+package com.example.community.repository.Interface;
 
 import com.example.community.dto.users.UserEntity;
 

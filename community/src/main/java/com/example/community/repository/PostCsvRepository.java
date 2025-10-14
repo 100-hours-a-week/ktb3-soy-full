@@ -32,7 +32,7 @@ public class PostCsvRepository {
         String createdAt = parts[8];
 
         return new PostEntity(
-                postId, writerId, title, content imgUrl,
+                postId, writerId, title, content, imgUrl,
                 likeCounts, viewCounts, commentCounts, createdAt
         );
     }
@@ -53,36 +53,37 @@ public class PostCsvRepository {
         init();
     }
 
-    private int[] getPageId(int pageNumber, int pageSize, int totalPosts){
-        int postStartId = (pageNumber - 1) * pageSize;
-        int postEndId = Math.min(postStartId + pageSize, totalPosts);
-        return new int[]{postStartId, postEndId};
+    // todo: Service 계층으로 보내기
+    private Long[] getPageId(Long pageNumber, Long pageSize, Integer totalPosts){
+        Long postStartId = (Long) (pageNumber - 1) * pageSize;
+        Long postEndId = (Long) Math.min(postStartId + pageSize, totalPosts);
+        return new Long[]{postStartId, postEndId};
     }
 
-    public List<PostEntity> findPageOfPosts(int pageNumber, int pageSize){
+    public List<PostEntity> findPageOfPosts(Long pageNumber, Long pageSize){
         // 정렬
         List<PostEntity> sortedPostEntityList = postStore.values().stream().sorted(
                 Comparator.comparing(PostEntity::getPostCreatedAt).reversed()
         ).toList();
 
         // 페이지 사이즈, 페이지 넘버에 맞춰서 페이지 아이디 설정
-        int[] pageIds = getPageId(pageNumber, pageSize, sortedPostEntityList.size());
+        Long[] pageIds = getPageId(pageNumber, pageSize, sortedPostEntityList.size());
 
-        return sortedPostEntityList.subList(pageIds[0], pageIds[1]);
+        return sortedPostEntityList.subList(Math.toIntExact(pageIds[0]), Math.toIntExact(pageIds[1]));
     }
 
-    public void verifyPostId(int postId){
+    public void verifyPostId(Long postId){
         if (!postStore.containsKey(postId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
         }
     }
 
-    public PostEntity findPostById(int postId){
+    public PostEntity findPostById(Long postId){
         verifyPostId(postId);
         return postStore.get(postId);
     }
 
-    public int savePost(PostEntity postEntity){
+    public Long savePost(PostEntity postEntity){
         postEntity.setPostId(sequence.getAndIncrement());
         postStore.put(postEntity.getPostId(), postEntity);
         return postEntity.getPostId();
@@ -92,7 +93,13 @@ public class PostCsvRepository {
         postStore.put(postEntity.getPostId(), postEntity);
     }
 
-    public void deletePost(int postId){
+    public void deletePost(Long postId){
         postStore.remove(postId);
+    }
+
+    public void likePost(Long postId){
+        PostEntity postEntity = postStore.get(postId);
+        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
+        postStore.put(postId, postEntity);
     }
 }

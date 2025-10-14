@@ -1,5 +1,6 @@
-package com.example.community.repository.users;
+package com.example.community.repository;
 import com.example.community.dto.users.UserEntity;
+import com.example.community.repository.Interface.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;

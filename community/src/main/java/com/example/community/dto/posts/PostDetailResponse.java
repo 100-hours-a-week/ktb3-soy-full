@@ -5,7 +5,7 @@ import com.example.community.dto.users.WriterSummary;
 import java.io.Writer;
 
 public class PostDetailResponse {
-    private int postId;
+    private Long postId;
     private String postTitle;
     private String postContent;
     private String postImgUrl;
@@ -14,7 +14,7 @@ public class PostDetailResponse {
     private WriterSummary writerSummary;
 
     public PostDetailResponse(){}
-    public PostDetailResponse(int postId, String postTitle, String postContent, String postImgUrl,
+    public PostDetailResponse(Long postId, String postTitle, String postContent, String postImgUrl,
                               String postCreatedAt, PostCounts PostCounts, WriterSummary writerSummary) {
         this.postId = postId;
         this.postTitle = postTitle;
@@ -25,8 +25,8 @@ public class PostDetailResponse {
         this.writerSummary = writerSummary;
     }
 
-    public int getPostId() {return postId;}
-    public void setPostId(int postId) {this.postId = postId;}
+    public Long getPostId() {return postId;}
+    public void setPostId(Long postId) {this.postId = postId;}
     public String getPostTitle() {return postTitle;}
     public void setPostTitle(String postTitle) {this.postTitle = postTitle;}
     public String getPostContent() {return postContent;}

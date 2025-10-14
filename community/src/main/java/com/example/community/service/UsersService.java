@@ -1,12 +1,12 @@
 package com.example.community.service;
 
 import com.example.community.dto.users.*;
-import com.example.community.repository.users.UserCsvRepository;
+import com.example.community.repository.UserCsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.example.community.Util;
+import com.example.community.Utility;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Service
 public class UsersService {
-    Util util = new Util();
+    Utility utility = new Utility();
     private UserCsvRepository repository;
     @Autowired
     public UsersService(UserCsvRepository userCsvRepository) {
@@ -46,7 +46,7 @@ public class UsersService {
         String password = signUpRequest.getUserPassword();
         String nickname = signUpRequest.getUserNickname();
         String profileImgUrl = checkAndSetProfileImage(signUpRequest.getUserProfileImgUrl());
-        String createdAt = util.getCreatedAt();
+        String createdAt = utility.getCreatedAt();
 
         nickname = nickname.trim();
         password = password.trim();

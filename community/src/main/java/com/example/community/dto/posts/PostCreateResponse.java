@@ -5,16 +5,16 @@ package com.example.community.dto.posts;
 public class PostCreateResponse {
 
     private String message;
-    private int postId;
+    private Long postId;
     private String redirectUri;
 
-    public PostCreateResponse(String message, int postId, String redirectUri) {
+    public PostCreateResponse(String message, Long postId, String redirectUri) {
         this.message = message;
         this.postId = postId;
         this.redirectUri = redirectUri;
     }
 
-    public static PostCreateResponse of(int postId) {
+    public static PostCreateResponse of(Long postId) {
         return new PostCreateResponse(
                 "게시글이 성공적으로 생성되었습니다.", // 반환 메시지
                 postId,
@@ -23,6 +23,6 @@ public class PostCreateResponse {
     }
 
     public String getMessage() {return message;}
-    public int getPostId() {return postId;}
+    public Long getPostId() {return postId;}
     public String getRedirectUri() {return redirectUri;}
 }

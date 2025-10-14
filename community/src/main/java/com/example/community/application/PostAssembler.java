@@ -1,4 +1,4 @@
-package com.example.community.application.posts;
+package com.example.community.application;
 
 import com.example.community.Utility;
 import com.example.community.dto.posts.*;

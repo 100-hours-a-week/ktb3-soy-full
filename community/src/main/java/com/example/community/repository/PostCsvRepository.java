@@ -11,27 +11,28 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class PostCsvRepository {
-    public final Map<Integer, PostEntity> postStore = new LinkedHashMap<>();
-    private AtomicInteger sequence = new AtomicInteger(0);
+    public final Map<Long, PostEntity> postStore = new LinkedHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0);
     private final String postDbPath = "src/main/resources/data/posts.csv";
 
     private PostEntity createPostEntity(String line){
         String[] parts = line.split(",");
-        Integer postId = Integer.parseInt(parts[0]);
+        Long postId = Long.parseLong(parts[0]);
         Long writerId = Long.parseLong(parts[1]);
         String title = parts[2];
         String content = parts[3];
         String imgUrl = parts[4];
-        Integer likeCounts = Integer.parseInt(parts[5]);
-        Integer viewCounts = Integer.parseInt(parts[6]);
-        Integer commentCounts = Integer.parseInt(parts[7]);
+        Long likeCounts = Long.parseLong(parts[5]);
+        Long viewCounts = Long.parseLong(parts[6]);
+        Long commentCounts = Long.parseLong(parts[7]);
         String createdAt = parts[8];
 
         return new PostEntity(
-                postId, writerId, title, content, imgUrl,
+                postId, writerId, title, content imgUrl,
                 likeCounts, viewCounts, commentCounts, createdAt
         );
     }
@@ -44,7 +45,7 @@ public class PostCsvRepository {
         while ((line = bufferedReader.readLine()) != null) {
             PostEntity postEntity = createPostEntity(line);
             sequence.set(postEntity.getPostId());
-            postStore.put((int) sequence.get(), postEntity);
+            postStore.put(sequence.get(), postEntity);
         }
     }
 

@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.URL;
 public class SignUpRequest {
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-    private static final String PW_REGEX = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}";
+    private static final String PW_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,20}$";
 
 
     @NotBlank
@@ -31,7 +31,6 @@ public class SignUpRequest {
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.userNickname = userNickname;
-        this.userProfileImgUrl = "";
     }
 
     public SignUpRequest(String userEmail, String userPassword, String userNickname, String userProfileImgUrl) {
@@ -48,4 +47,5 @@ public class SignUpRequest {
     public String getUserNickname() {return userNickname;}
     public void setUserNickname(String userNickname) {this.userNickname = userNickname;}
     public String getUserProfileImgUrl() {return userProfileImgUrl;}
+    public void setUserProfileImgUrl(String userProfileImgUrl) {this.userProfileImgUrl = userProfileImgUrl;}
 }

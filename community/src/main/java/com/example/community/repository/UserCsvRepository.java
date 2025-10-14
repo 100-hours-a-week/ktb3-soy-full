@@ -18,12 +18,7 @@ public class UserCsvRepository implements UserRepository {
     private final String userDbPath = "src/main/resources/data/users.csv";
 
     private UserEntity createUserDto(String line){
-        String[] parts = line.split(",");
-        String deletedTime = null;
-        if (parts.length == 8) {
-            deletedTime = parts[7];
-        }
-
+        String[] parts = line.split(",", -1);
         Long userId = Long.valueOf(parts[0]);
         String userEmail = parts[1];
         String userPassword = parts[2];
@@ -31,7 +26,7 @@ public class UserCsvRepository implements UserRepository {
         String userProfilePic = parts[4];
         Boolean userIsDeleted = Boolean.valueOf(parts[5]);
         String userCreatedAt = parts[6];
-        String userDeletedAt = deletedTime;
+        String userDeletedAt = null;
 
         UserEntity userEntity = new UserEntity(
                 userId, userEmail,userPassword,userNickname,userProfilePic,userIsDeleted,userCreatedAt, userDeletedAt

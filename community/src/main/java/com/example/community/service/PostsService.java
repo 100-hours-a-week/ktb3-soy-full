@@ -122,7 +122,7 @@ public class PostsService {
         }
 
         UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "게시글을 작성할 수 없습니다."));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글을 작성할 수 없습니다."));
 
         PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
         Long postId = postCsvRepository.savePost(postEntity);
@@ -157,7 +157,7 @@ public class PostsService {
 
     public void ensureUserIsPostWriter(Long postWriterId, Long userId){
         if (postWriterId != userId){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "접근할 수 없는 게시글입니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없는 게시글입니다.");
         }
     }
 

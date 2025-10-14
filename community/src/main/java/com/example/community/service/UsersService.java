@@ -34,11 +34,10 @@ public class UsersService {
     }
 
     private String checkAndSetProfileImage(String profileImgUrl) {
-        if (profileImgUrl.equals("")) {
+        if (profileImgUrl == null || profileImgUrl.isBlank()) {
             return DEFAULT_PROFILE_IMG;
-        } else {
-            return profileImgUrl;
         }
+        return profileImgUrl;
     }
 
     public SignUpResponse signup(SignUpRequest signUpRequest) {

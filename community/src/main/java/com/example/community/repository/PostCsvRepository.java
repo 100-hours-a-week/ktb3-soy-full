@@ -53,23 +53,13 @@ public class PostCsvRepository {
         init();
     }
 
-    // todo: Service 계층으로 보내기
-    private Long[] getPageId(Long pageNumber, Long pageSize, Integer totalPosts){
-        Long postStartId = (Long) (pageNumber - 1) * pageSize;
-        Long postEndId = (Long) Math.min(postStartId + pageSize, totalPosts);
-        return new Long[]{postStartId, postEndId};
-    }
-
-    public List<PostEntity> findPageOfPosts(Long pageNumber, Long pageSize){
+    public List<PostEntity> findPageOfPosts(Long startPageId, Long endPageId){
         // 정렬
         List<PostEntity> sortedPostEntityList = postStore.values().stream().sorted(
                 Comparator.comparing(PostEntity::getPostCreatedAt).reversed()
         ).toList();
 
-        // 페이지 사이즈, 페이지 넘버에 맞춰서 페이지 아이디 설정
-        Long[] pageIds = getPageId(pageNumber, pageSize, sortedPostEntityList.size());
-
-        return sortedPostEntityList.subList(Math.toIntExact(pageIds[0]), Math.toIntExact(pageIds[1]));
+        return sortedPostEntityList.subList(Math.toIntExact(startPageId), Math.toIntExact(endPageId));
     }
 
     public void verifyPostId(Long postId){

@@ -78,14 +78,24 @@ public class PostsService {
                 .collect(Collectors.toList());
     }
 
+    private Long[] getPageId(Long pageNumber, Long pageSize, Long totalPosts){
+        Long postStartId = (Long) (pageNumber - 1) * pageSize;
+        Long postEndId = (Long) Math.min(postStartId + pageSize, totalPosts);
+        return new Long[]{postStartId, postEndId};
+    }
+
     public PostListResponse viewPostList(Long pageNumber, Long pageSize) {
         Long[] pageInfo = getTotalPostsAndPages(pageSize); // 서비스 계층으로 바꾸기
         Long totalPosts = pageInfo[0];
         Long totalPages = pageInfo[1];
 
+        Long[] pageIds = getPageId(pageNumber, pageSize, totalPosts);
+        Long startPageId = pageIds[0];
+        Long endPageId = pageIds[1];
+
         verifyPagination(totalPages, totalPosts, pageNumber, pageSize);
 
-        List<PostEntity> paginatedPosts = postCsvRepository.findPageOfPosts(pageNumber, pageSize);
+        List<PostEntity> paginatedPosts = postCsvRepository.findPageOfPosts(startPageId, endPageId);
         List<Long> writerIds = extractWriterIds(paginatedPosts);
         List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts, writerIds);
 

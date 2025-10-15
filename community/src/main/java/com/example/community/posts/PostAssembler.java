@@ -21,7 +21,7 @@ public class PostAssembler {
         return postEntity;
     }
 
-    public PostDetailResponse toPublicdetailResponse(PostEntity postEntity, UserEntity userEntity) {
+    public PostDetailResponse toDetailResponse(PostEntity postEntity, UserEntity userEntity) {
         WriterSummary writerSummary = new WriterSummary(
                 userEntity.getUserId(),
                 userEntity.getUserNickname(),

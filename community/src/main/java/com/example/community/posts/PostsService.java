@@ -45,7 +45,7 @@ public class PostsService {
         UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
         verifyUser(writerEntity);
-        PostDetailResponse poseDetailResponse = postAssembler.toPublicdetailResponse(postEntity, writerEntity);
+        PostDetailResponse poseDetailResponse = postAssembler.toDetailResponse(postEntity, writerEntity);
         return poseDetailResponse;
     }
 

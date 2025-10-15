@@ -87,8 +87,6 @@ public class UsersService {
 
     private Map<String,String> getAuthInfoMap(){
         Map<String,String> authInfoMap = new HashMap<>();
-        authInfoMap.put("accessToken",getAccessToken());
-        authInfoMap.put("refreshToken",getRefreshToken());
         String[] timestamp = getIssueAndExpirationTimes();
         authInfoMap.put("issuedAt",timestamp[0]);
         authInfoMap.put("expiresIn",timestamp[1]);
@@ -123,8 +121,6 @@ public class UsersService {
 
         return new SignInResponse(
                 userEntity.getUserEmail(),
-                authInfoMap.get("accessToken"),
-                authInfoMap.get("refreshToken"),
                 authInfoMap.get("issuedAt"),
                 authInfoMap.get("expiresIn")
         );

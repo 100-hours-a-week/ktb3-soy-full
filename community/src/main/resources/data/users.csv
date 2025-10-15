@@ -1,0 +1,5 @@
+userId,userEmail,userPassword,userNickname,userProfileUrl,userIsDeleted,userCreatedAt,userDeletedAt
+1,test1@gmail.com,Test1234!,test1,image.com/test1,FALSE,202510071423,
+2,test2@gmail.com,Test1234!,test2,image.com/test2,FALSE,202510071424,
+3,test3@gmail.com,Test1234!,test3,image.com/test3,FALSE,202510071425,
+4,test4@gmail.com,Test1234!,test4,image.com/test4,TRUE,202510071425,202510141025

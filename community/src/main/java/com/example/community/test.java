@@ -1,6 +1,6 @@
 package com.example.community;
 
-import com.example.community.repository.PostLikeCsvRepository;
+import com.example.community.likes.PostLikeCsvRepository;
 
 import java.io.IOException;
 

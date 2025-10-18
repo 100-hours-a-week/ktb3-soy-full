@@ -29,19 +29,19 @@ public class CommentService {
     }
 
     public void validatePost(Long postId) {
-        if (!postCsvRepository.verifyPostId(postId)){
+        if (!postCsvRepository.existsById(postId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
         }
     }
 
     public void validateUser(Long userId){
-        if (!userCsvRepository.verifyUser(userId)){
+        if (!userCsvRepository.existsById(userId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.");
         }
     }
 
     public void validateComment(Long commentId) {
-        if(!commentsCsvRepository.verifyComment(commentId)){
+        if(!commentsCsvRepository.existsById(commentId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글 정보를 찾을 수 없습니다.");
         }
     }
@@ -53,7 +53,7 @@ public class CommentService {
 
     public CommentsViewResponse viewComments(Long postId) {
         validatePost(postId);
-        List<CommentsEntity> commentsEntities = commentsCsvRepository.getComments(postId);
+        List<CommentsEntity> commentsEntities = commentsCsvRepository.getCommentsByPostId(postId);
         commentsEntities = sortCommentsByCreatedAt(commentsEntities);
         return new CommentsViewResponse(commentsEntities);
     }
@@ -86,7 +86,7 @@ public class CommentService {
             ensureCommentMatchPost(parentCommentId, postId);
         }
         CommentsEntity commentsEntity = commentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
-        commentsCsvRepository.saveComment(commentsEntity);
+        commentsCsvRepository.save(commentsEntity);
         return CreateCommentResponse.of(postId);
     }
 
@@ -113,7 +113,7 @@ public class CommentService {
         ensureCommentMatchUser(commentId, userId);
         ensureCommentMatchPost(postId, commentId);
 
-        commentsCsvRepository.deleteComment(commentId);
+        commentsCsvRepository.delete(commentId);
         return SimpleResponse.forDeleteComment(userId, commentId);
     }
 

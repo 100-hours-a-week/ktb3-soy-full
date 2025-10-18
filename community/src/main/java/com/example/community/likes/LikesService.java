@@ -2,6 +2,7 @@ package com.example.community.likes;
 
 import com.example.community.Utility;
 import com.example.community.dto.SimpleResponse;
+import com.example.community.likes.dto.PostLikeEntity;
 import com.example.community.users.dto.UserEntity;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
@@ -27,7 +28,11 @@ public class LikesService {
     }
 
     public Boolean checkUserLikePost(Long postId, Long userId) {
-        return postLikeCsvRepository.checkUserLikePost(postId, userId);
+        return postLikeCsvRepository.existsByPostAndUser(postId, userId);
+    }
+
+    private String getId(Long postId, Long userId) {
+        return postId + "-" + userId;
     }
 
     public void validateUser(Long userId){
@@ -43,8 +48,9 @@ public class LikesService {
         if (checkUserLikePost(postId, userId)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다.");
         }
-        postLikeCsvRepository.likePost(postId, userId, utility.getCreatedAt());
-        postCsvRepository.likePost(postId);
+        PostLikeEntity postLikeEntity = new PostLikeEntity(postId, userId, utility.getCreatedAt());
+        postLikeCsvRepository.save(postLikeEntity);
+        postCsvRepository.incrementLikeCount(postId);
         return SimpleResponse.forLikePost(postId, userId);
     }
 
@@ -53,8 +59,9 @@ public class LikesService {
         if(!checkUserLikePost(postId, userId)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아하지 않는 게시글입니다.");
         }
-        postLikeCsvRepository.dislikePost(postId, userId);
-        postCsvRepository.dislikePost(postId);
+        String id = getId(postId, userId);
+        postLikeCsvRepository.delete(Long.parseLong(id));
+        postCsvRepository.decrementLikeCount(postId);
         return SimpleResponse.forDislikePost(postId, userId);
     }
 

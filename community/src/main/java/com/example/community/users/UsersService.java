@@ -93,11 +93,6 @@ public class UsersService {
         return authInfoMap;
     }
 
-    public List<UserEntity> findUserByIds(List<Long> ids){
-        // Change findById to findAllById
-        return repository.findAllById(ids);
-    }
-
     public UserEntity findUserByEmail(String email){
         return repository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(

@@ -34,14 +34,14 @@ public class PostsService {
     }
 
     public void validatePost(Long postId) {
-        if (!postCsvRepository.verifyPostId(postId)){
+        if (!postCsvRepository.existsById(postId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
         }
     }
 
     public PostDetailResponse viewPostDetail(Long postId) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
+        PostEntity postEntity = postCsvRepository.findById(postId).get();
         UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
         verifyUser(writerEntity);
@@ -100,7 +100,7 @@ public class PostsService {
 
         verifyPagination(totalPages, totalPosts, pageNumber, pageSize);
 
-        List<PostEntity> paginatedPosts = postCsvRepository.findPageOfPosts(startPageId, endPageId);
+        List<PostEntity> paginatedPosts = postCsvRepository.findPagedPosts(startPageId, endPageId);
         List<Long> writerIds = extractWriterIds(paginatedPosts);
         List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts, writerIds);
 
@@ -123,7 +123,8 @@ public class PostsService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글을 작성할 수 없습니다."));
 
         PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
-        Long postId = postCsvRepository.savePost(postEntity);
+        postCsvRepository.save(postEntity);
+        Long postId = postEntity.getPostId();
         return PostCreateResponse.of(postId);
     }
 
@@ -161,21 +162,21 @@ public class PostsService {
 
     public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
+        PostEntity postEntity = postCsvRepository.findById(postId).get();
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
         editPostTitle(postEntity, postEditRequest.getPostTitle());
         editPostContent(postEntity, postEditRequest.getPostContent());
         editPostImgUrl(postEntity, postEditRequest.getPostImageUrl());
-        postCsvRepository.updatePost(postEntity);
+        postCsvRepository.edit(postEntity);
         return SimpleResponse.forEditPost(userId, postId);
     }
 
     public SimpleResponse deletePost(Long postId, Long userId) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findPostById(postId).get();
+        PostEntity postEntity = postCsvRepository.findById(postId).get();
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
-        postCsvRepository.deletePost(postId);
+        postCsvRepository.delete(postId);
         return SimpleResponse.forDeletePost(userId, postId);
     }
 }

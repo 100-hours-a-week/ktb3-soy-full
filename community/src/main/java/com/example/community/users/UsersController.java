@@ -1,6 +1,5 @@
 package com.example.community.users.UserController;
 
-import com.example.community.users.exception.UserNotFoundException;
 import com.example.community.users.UsersService;
 import com.example.community.users.dto.*;
 import jakarta.validation.Valid;
@@ -48,11 +47,6 @@ public class UsersController {
     public ResponseEntity<SimpleResponse> softDelete(@PathVariable Long id) {
         SimpleResponse simpleResponse = usersService.softDelete(id);
         return ResponseEntity.ok(simpleResponse);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

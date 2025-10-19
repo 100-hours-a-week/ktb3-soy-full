@@ -1,15 +1,15 @@
 package com.example.community.posts;
 
 import com.example.community.posts.dto.*;
+import com.example.community.users.UserException;
 import com.example.community.users.dto.UserEntity;
 import com.example.community.users.UserCsvRepository;
-import com.example.community.dto.SimpleResponse;
+import com.example.community.common.dto.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -31,21 +31,29 @@ public class PostsService {
 
     private void verifyUser(UserEntity userEntity) {
         if (userEntity.getUserIsDeleted()){
-            throw new ResponseStatusException(HttpStatus.GONE, "게시글을 찾을 수 없습니다.");
+            throw new PostException.PostGoneException("게시글을 찾을 수 없습니다.");
         }
+    }
+
+    public UserEntity findUserById(Long id){
+        return userCsvRepository.findById(id).orElseThrow(()-> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    public PostEntity findPostById(Long id){
+        return postCsvRepository.findById(id)
+                .orElseThrow(() -> new PostException.PostNotFoundException("존재하지 않는 게시글입니다."));
     }
 
     public void validatePost(Long postId) {
         if (!postCsvRepository.existsById(postId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
+            throw new PostException.PostNotFoundException("존재하지 않는 게시글입니다.");
         }
     }
 
     public PostDetailResponse viewPostDetail(Long postId) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findById(postId).get();
-        UserEntity writerEntity = userCsvRepository.findById(postEntity.getPostWriterId())
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."));
+        PostEntity postEntity = findPostById(postId);
+        UserEntity writerEntity = findUserById(postEntity.getPostWriterId());
         verifyUser(writerEntity);
         PostDetailResponse poseDetailResponse = postAssembler.toDetailResponse(postEntity, writerEntity);
         return poseDetailResponse;
@@ -117,7 +125,7 @@ public class PostsService {
         }
 
         UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글을 작성할 수 없습니다."));
+                .orElseThrow(() -> new PostException.PostNotAuthorizedException("게시글을 작성할 수 없습니다."));
 
         PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
         postCsvRepository.save(postEntity);
@@ -129,7 +137,7 @@ public class PostsService {
         if((postEditRequest.getPostTitle()==null || postEditRequest.getPostTitle().isEmpty()) &&
                 (postEditRequest.getPostContent()==null || postEditRequest.getPostContent().isEmpty()) &&
                 (postEditRequest.getPostImageUrl()==null || postEditRequest.getPostImageUrl().isEmpty())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 내용이 없습니다.");
+            throw new PostException.NoEditPostException("수정할 내용이 없습니다.");
         }
     }
 
@@ -153,13 +161,13 @@ public class PostsService {
 
     public void ensureUserIsPostWriter(Long postWriterId, Long userId){
         if (postWriterId != userId){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없는 게시글입니다.");
+            throw new PostException.PostNotAuthorizedException("접근할 수 없는 게시글입니다.");
         }
     }
 
     public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findById(postId).get();
+        PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
         editPostTitle(postEntity, postEditRequest.getPostTitle());
@@ -171,7 +179,7 @@ public class PostsService {
 
     public SimpleResponse deletePost(Long postId, Long userId) {
         validatePost(postId);
-        PostEntity postEntity = postCsvRepository.findById(postId).get();
+        PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         postCsvRepository.delete(postId);
         return SimpleResponse.forDeletePost(userId, postId);

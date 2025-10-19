@@ -1,6 +1,6 @@
 package com.example.community.posts;
 
-import com.example.community.dto.SimpleResponse;
+import com.example.community.common.dto.SimpleResponse;
 import com.example.community.posts.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

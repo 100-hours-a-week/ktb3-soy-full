@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.common.dto;
 
 public class SimpleResponse {
     private String useCase;

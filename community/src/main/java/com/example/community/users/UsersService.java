@@ -1,6 +1,8 @@
 package com.example.community.users;
 
 import com.example.community.users.dto.*;
+import com.example.community.users.UserException;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -94,15 +96,16 @@ public class UsersService {
     }
 
     public UserEntity findUserByEmail(String email){
-        return repository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "존재하지 않는 이메일입니다."
-                ));
+        return repository.findByEmail(email).orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    public UserEntity findUserById(Long id){
+        return repository.findById(id).orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
     }
 
     public void verifyPassword(UserEntity userEntity, String givenPassword){
         if(!userEntity.isPasswordMatch(givenPassword)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+            throw new UserException.WrongPasswordException("잘못된 비밀번호입니다.");
         }
     }
 
@@ -125,17 +128,16 @@ public class UsersService {
         String oldPassword = editPasswordRequest.getUserOldPassword();
         String newPassword = editPasswordRequest.getUserNewPassword();
 
-        UserEntity userEntity = repository.findById(id).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."));
+        UserEntity userEntity = findUserById(id);
 
         String realOldPassword = userEntity.getUserPassword();
 
         if (!oldPassword.equals(realOldPassword)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "잘못된 비밀번호입니다.");
+            throw new UserException.InvalidCurrentPasswordException("잘못된 비밀번호입니다.");
         }
 
         if (newPassword.equals(oldPassword)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 비밀번호와 새 비밀번호가 동일합니다.");
+            throw new UserException.SamePasswordException("현재 비밀번호와 새 비밀번호가 동일합니다.");
         }
 
         repository.editPassword(userEntity, newPassword);
@@ -147,23 +149,21 @@ public class UsersService {
     }
 
     public SimpleResponse editProfile(Long id, EditProfileRequest editProfileRequest) {
-        UserEntity userEntity = repository.findById(id).orElseThrow(
-                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다.")
-        );
+        UserEntity userEntity = findUserById(id);
 
         String newNickname = editProfileRequest.getUserNickname();
         String newProfileImgUrl = editProfileRequest.getUserProfileImgUrl();
 
         if (newNickname.equals(userEntity.getUserNickname())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이전 닉네임과 동일합니다.");
+            throw new UserException.SameNicknameException("이전 닉네임과 동일합니다.");
         };
 
         if (repository.findByNickname(newNickname).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "존재하는 닉네임입니다.");
+            throw new UserException.UserNicknameAlreadyExistsException("존재하는 닉네임입니다.");
         }
 
         if (newProfileImgUrl != "" & newProfileImgUrl.equals(userEntity.getUserProfileImgUrl())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이전 프로필 사진과 동일합니다.");
+            throw new UserException.SameProfileImgException("이전 프로필 사진과 동일합니다.");
         }
 
         repository.editProfile(
@@ -178,12 +178,13 @@ public class UsersService {
         );
     }
 
+
+
     public SimpleResponse softDelete(Long id) {
-        UserEntity userEntity = repository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 사용자입니다."));
+        UserEntity userEntity = findUserById(id);
 
         if (userEntity.getUserIsDeleted()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 삭제된 사용자입니다.");
+            throw new UserException.UserNotFoundException("존재하지 않는 사용자입니다.");
         }
 
         repository.softDelete(userEntity);

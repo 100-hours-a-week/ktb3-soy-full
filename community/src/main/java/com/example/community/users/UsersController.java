@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UsersController {
     private UsersService usersService;
+
     @Autowired
-    public UsersController(UsersService usersService)
-    {
+    public UsersController(UsersService usersService) {
         this.usersService = usersService;
     }
 
-    @PostMapping("/api/users/signup")
+    @PostMapping("/api/users")
     public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         System.out.println("signUp");
         SignUpResponse signUpResponse = usersService.signup(signUpRequest);
@@ -32,27 +32,27 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(signInResponse);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @PatchMapping("/api/users/editPassword/{id}")
-    public ResponseEntity<SimpleResponse> editPassword(@PathVariable Long id, @Valid @RequestBody EditPasswordRequest editPasswordRequest){
+    @PatchMapping("/api/users/{id}/password")
+    public ResponseEntity<SimpleResponse> editPassword(@PathVariable Long id, @Valid @RequestBody EditPasswordRequest editPasswordRequest) {
         SimpleResponse simpleResponse = usersService.editPassword(id, editPasswordRequest);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @PatchMapping("/api/users/editProfile/{id}")
-    ResponseEntity<SimpleResponse> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest, @PathVariable Long id){
+    @PatchMapping("/api/users/{id}/profile")
+    ResponseEntity<SimpleResponse> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest, @PathVariable Long id) {
         SimpleResponse simpleResponse = usersService.editProfile(id, editProfileRequest);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @PatchMapping("/api/users/delete/{id}")
-    public ResponseEntity<SimpleResponse> softDelete(@PathVariable Long id){
+    @DeleteMapping("/api/users/{id}")
+    public ResponseEntity<SimpleResponse> softDelete(@PathVariable Long id) {
         SimpleResponse simpleResponse = usersService.softDelete(id);
         return ResponseEntity.ok(simpleResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

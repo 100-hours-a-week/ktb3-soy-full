@@ -13,13 +13,13 @@ public class LikesController {
         this.postLikesService = postLikesService;
     }
 
-    @PostMapping("/api/posts/{postId}/likes")
+    @PostMapping("/api/posts/{postId}")
     public ResponseEntity<SimpleResponse> likePost(@PathVariable("postId") Long postId, @RequestParam Long userId) {
         SimpleResponse simpleResponse = postLikesService.likePost(postId, userId);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @DeleteMapping("/api/posts/{postId}/likes")
+    @DeleteMapping("/api/posts/{postId}")
     public ResponseEntity<SimpleResponse> dislikePost(@PathVariable("postId") Long postId, @RequestParam Long userId){
         SimpleResponse simpleResponse = postLikesService.dislikePost(postId, userId);
         return ResponseEntity.ok(simpleResponse);

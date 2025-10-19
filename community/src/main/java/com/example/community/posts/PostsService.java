@@ -11,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,17 +66,13 @@ public class PostsService {
         }
     }
 
-    private List<PostItemResponse> getPostItemResponseList(List<PostEntity> postEntityList, List<Long> writerIds){
-        List<PostItemResponse> postItemResponseList = new ArrayList<>();
-
-        for (int index = 0; index<postEntityList.size(); index++) {
-            UserEntity user = userCsvRepository.findById(writerIds.get(index)).get();
-            PostEntity paginatedPost = postEntityList.get(index);
-            PostItemResponse postItemResponse = postAssembler.toPostItemResponse(paginatedPost, user);
-            postItemResponseList.add(postItemResponse);
-        }
-
-        return postItemResponseList;
+    private List<PostItemResponse> getPostItemResponseList(List<PostEntity> postEntityList){
+        List<Long> uniqueWriterIds = postEntityList.stream().map(PostEntity::getPostWriterId).collect(Collectors.toList());
+        Map<Long, UserEntity> uniqueWriterMap = userCsvRepository.findAllByIds(uniqueWriterIds)
+                .stream().collect(Collectors.toMap(UserEntity::getUserId, Function.identity()));
+        return postEntityList.stream()
+                .map(post -> postAssembler.toPostItemResponse(post, uniqueWriterMap.get(post.getPostWriterId())))
+                .toList();
     }
 
     private List<Long> extractWriterIds(List<PostEntity> postEntityList){
@@ -101,8 +99,7 @@ public class PostsService {
         verifyPagination(totalPages, totalPosts, pageNumber, pageSize);
 
         List<PostEntity> paginatedPosts = postCsvRepository.findPagedPosts(startPageId, endPageId);
-        List<Long> writerIds = extractWriterIds(paginatedPosts);
-        List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts, writerIds);
+        List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts);
 
         PagingMetaResponse pagingMetaResponse = new PagingMetaResponse(
                 pageNumber, pageSize, totalPosts, totalPages, "createdAt,desc"

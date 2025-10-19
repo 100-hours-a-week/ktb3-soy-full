@@ -1,7 +1,6 @@
 package com.example.community.users;
 import com.example.community.users.dto.UserEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,6 +70,15 @@ public class UserCsvRepository implements UserRepository {
                 .filter(item -> item.getUserEmail().equals(email))
                 .findAny();
     }
+
+    @Override
+    public ArrayList<UserEntity> findAllByIds(List<Long> ids) {
+        return userStore.entrySet().stream()
+                .filter(entry -> ids.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 
     public Optional<UserEntity> findNotDeletedById(Long id) {
         UserEntity userEntity = userStore.get(id);

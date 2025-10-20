@@ -1,4 +1,4 @@
-package com.example.community.users.UserController;
+package com.example.community.users.UsersController;
 
 import com.example.community.users.UsersService;
 import com.example.community.users.dto.*;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/users")
 public class UsersController {
     private UsersService usersService;
 
@@ -17,7 +18,7 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @PostMapping("/api/users")
+    @PostMapping
     public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         System.out.println("signUp");
         SignUpResponse signUpResponse = usersService.signup(signUpRequest);
@@ -25,28 +26,27 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponse);
     }
 
-    @PostMapping("api/users/auth")
+    @PostMapping("/auth")
     ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest signInRequest) {
         SignInResponse signInResponse = usersService.signIn(signInRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(signInResponse);
     }
 
-    @PatchMapping("/api/users/{id}/password")
+    @PatchMapping("/{id}/password")
     public ResponseEntity<SimpleResponse> editPassword(@PathVariable Long id, @Valid @RequestBody EditPasswordRequest editPasswordRequest) {
         SimpleResponse simpleResponse = usersService.editPassword(id, editPasswordRequest);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @PatchMapping("/api/users/{id}/profile")
+    @PatchMapping("/{id}/profile")
     ResponseEntity<SimpleResponse> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest, @PathVariable Long id) {
         SimpleResponse simpleResponse = usersService.editProfile(id, editProfileRequest);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @DeleteMapping("/api/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<SimpleResponse> softDelete(@PathVariable Long id) {
         SimpleResponse simpleResponse = usersService.softDelete(id);
         return ResponseEntity.ok(simpleResponse);
     }
-
 }

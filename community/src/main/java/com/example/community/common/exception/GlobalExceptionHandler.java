@@ -1,6 +1,10 @@
 package com.example.community.common.exception;
 
 import com.example.community.common.dto.ErrorResponse;
+import com.example.community.posts.PostsController;
+import com.example.community.comments.CommentsController;
+import com.example.community.likes.LikesController;
+import com.example.community.users.UsersController.UsersController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -9,10 +13,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;

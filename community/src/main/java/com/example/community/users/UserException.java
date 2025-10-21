@@ -1,6 +1,7 @@
 package com.example.community.users;
 
 import com.example.community.common.exception.BusinessException;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 public class UserException extends BusinessException {

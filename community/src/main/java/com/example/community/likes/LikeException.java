@@ -9,6 +9,12 @@ public class LikeException extends BusinessException {
         super(status, message);
     }
 
+    public static class NotFoundException extends BusinessException {
+        public NotFoundException(String message) {
+            super(HttpStatus.NOT_FOUND, message);
+        }
+    }
+
     public static class AlreadyLikedException extends BusinessException {
         public AlreadyLikedException(String message) {
             super(HttpStatus.BAD_REQUEST, message);

@@ -1,32 +1,41 @@
 package com.example.community.likes;
 
-import lombok.RequiredArgsConstructor;
+import com.example.community.likes.dto.SimpleResponse;
+import com.example.community.likes.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.community.common.dto.SimpleResponse;
 
 import java.util.Map;
+
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api")
 public class LikesController {
-    private final Map<String, LikeService> likeServices;
+    private Map<String, LikeService> likeServiceMap;
+    @Autowired
+    public LikesController(Map<String, LikeService> likeServiceMap) {
+        this.likeServiceMap = likeServiceMap;
+    }
 
-    @PostMapping("/{type}/{id}/likes")
-    public ResponseEntity<SimpleResponse> like(@PathVariable String type, @PathVariable Long id, @RequestParam Long userId) {
-        LikeService service = likeServices.get(type + "LikeService");
-        System.out.println("userId = " + userId);
-        if (service == null) throw new IllegalArgumentException("Invalid type");
-        SimpleResponse simpleResponse = service.like(id, userId);
+    public LikeService getLikeService(String contentType) {
+        LikeService likeService = likeServiceMap.get(contentType + "LikeService");
+        if (likeService == null) {
+            throw new IllegalArgumentException("지원하지 않는 contentType: " + contentType);
+        }
+        return likeService;
+    }
+
+    @PostMapping("/{contentType}/{contentId}/likes")
+    public ResponseEntity<com.example.community.likes.dto.SimpleResponse> like(@PathVariable("contentType") String contentType, @PathVariable("contentId") Long contentId, @RequestParam Long userId){
+        LikeService likeService = getLikeService(contentType);
+        SimpleResponse simpleResponse = likeService.like(contentId, userId);
         return ResponseEntity.ok(simpleResponse);
     }
 
-    @DeleteMapping("/{type}/{id}/likes")
-    public ResponseEntity<SimpleResponse> dislikePost(@PathVariable String type, @PathVariable Long id, @RequestParam Long userId){
-        LikeService service = likeServices.get(type + "LikeService");
-        if(service == null) throw new IllegalArgumentException("Invalid type");
-        SimpleResponse simpleResponse = service.dislike(id, userId);
+    @DeleteMapping("/{contentType}/{contentId}/likes")
+    public ResponseEntity<SimpleResponse> unlike(@PathVariable("contentType") String contentType, @PathVariable("contentId") Long contentId, @RequestParam Long userId){
+        LikeService likeService = getLikeService(contentType);
+        SimpleResponse simpleResponse = likeService.unlike(contentId, userId);
         return ResponseEntity.ok(simpleResponse);
     }
 }

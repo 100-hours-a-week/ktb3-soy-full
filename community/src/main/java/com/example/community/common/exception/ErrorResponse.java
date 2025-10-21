@@ -1,11 +1,9 @@
-package com.example.community.common.dto;
+package com.example.community.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jdk.jfr.DataAmount;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

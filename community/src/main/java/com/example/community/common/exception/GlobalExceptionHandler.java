@@ -1,6 +1,7 @@
 package com.example.community.common.exception;
 
-import com.example.community.common.dto.ErrorResponse;
+import com.example.community.users.UserApiResponse;
+import com.example.community.users.UserException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,9 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,6 +29,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), message, LocalDateTime.now());
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
+
+    // custom
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<CommonResponse<Void>> handleUserException(UserException e) {
+        return UserApiResponse.fail(e);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
+        return buildErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
 
     // 400
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
@@ -74,16 +85,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    // custom
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
-        return buildErrorResponse(ex.getMessage(), ex.getStatus());
-    }
-
     // 500 InternalServerError
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
-        return buildErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
+//        return buildErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

@@ -1,7 +1,6 @@
 package com.example.community.users;
 
 import com.example.community.common.exception.BusinessException;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 public class UserException extends BusinessException {
@@ -10,43 +9,43 @@ public class UserException extends BusinessException {
         super(status, message);
     }
 
-    public static class UserNotFoundException extends BusinessException {
+    public static class UserNotFoundException extends UserException {
         public UserNotFoundException(String message) {
             super(HttpStatus.NOT_FOUND, message);
         }
     }
 
-    public static class WrongPasswordException extends BusinessException {
+    public static class WrongPasswordException extends UserException {
         public WrongPasswordException(String message) {
             super(HttpStatus.UNAUTHORIZED, message);
         }
     }
 
-    public static class InvalidCurrentPasswordException extends BusinessException {
+    public static class InvalidCurrentPasswordException extends UserException {
         public InvalidCurrentPasswordException(String message) {
             super(HttpStatus.CONFLICT, message);
         }
     }
 
-    public static class SamePasswordException extends BusinessException {
+    public static class SamePasswordException extends UserException {
         public SamePasswordException(String message) {
-            super(HttpStatus.BAD_REQUEST, message);
+            super(HttpStatus.CONFLICT, message);
         }
     }
 
-    public static class SameNicknameException extends BusinessException {
+    public static class SameNicknameException extends UserException {
         public SameNicknameException(String message) {
             super(HttpStatus.CONFLICT, message);
         }
     }
 
-    public static class SameProfileImgException extends BusinessException {
+    public static class SameProfileImgException extends UserException {
         public SameProfileImgException(String message) {
             super(HttpStatus.CONFLICT, message);
         }
     }
 
-    public static class UserNicknameAlreadyExistsException extends BusinessException {
+    public static class UserNicknameAlreadyExistsException extends UserException {
         public UserNicknameAlreadyExistsException(String message) {
             super(HttpStatus.CONFLICT, message);
         }

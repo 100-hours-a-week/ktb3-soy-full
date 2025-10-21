@@ -1,8 +1,17 @@
 package com.example.community.likes.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "좋아요 간단 응답")
 public class SimpleResponse {
+
+    @Schema(description = "컨텐츠 타입", example = "post")
     private String contentType;
+
+    @Schema(description = "컨텐츠 식별자", example = "1")
     private Long contentId;
+
+    @Schema(description = "컨텐츠 작성자 식별자", example = "1")
     private Long userId;
 
     public SimpleResponse() {}

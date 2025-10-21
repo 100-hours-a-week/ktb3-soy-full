@@ -1,9 +1,10 @@
 package com.example.community.comments;
 
 import com.example.community.comments.dto.*;
-import com.example.community.dto.SimpleResponse;
+import com.example.community.common.dto.SimpleResponse;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
+import com.example.community.users.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,20 +30,20 @@ public class CommentService {
     }
 
     public void validatePost(Long postId) {
-        if (!postCsvRepository.verifyPostId(postId)){
+        if (!postCsvRepository.existsById(postId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
         }
     }
 
     public void validateUser(Long userId){
-        if (!userCsvRepository.verifyUser(userId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.");
+        if (!userCsvRepository.existsById(userId)){
+            throw new UserException.UserNotFoundException("존재하지 않는 사용자입니다.");
         }
     }
 
     public void validateComment(Long commentId) {
-        if(!commentsCsvRepository.verifyComment(commentId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "댓글 정보를 찾을 수 없습니다.");
+        if(!commentsCsvRepository.existsById(commentId)){
+            throw new CommentsException.CommentsNotFoundException("댓글 정보를 찾을 수 없습니다.");
         }
     }
 
@@ -53,23 +54,27 @@ public class CommentService {
 
     public CommentsViewResponse viewComments(Long postId) {
         validatePost(postId);
-        List<CommentsEntity> commentsEntities = commentsCsvRepository.getComments(postId);
+        List<CommentsEntity> commentsEntities = commentsCsvRepository.getCommentsByPostId(postId);
         commentsEntities = sortCommentsByCreatedAt(commentsEntities);
         return new CommentsViewResponse(commentsEntities);
     }
 
-    public void ensureCommentMatchPost(Long parentCommentId, Long postId) {
-        CommentsEntity commentsEntity = commentsCsvRepository.findById(parentCommentId).get();
-        if (!commentsEntity.getPostId().equals(postId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "댓글 정보를 확인하세요.");
-        }
+    public CommentsEntity findCommentById(Long commentId) {
+        return commentsCsvRepository.findById(commentId)
+                .orElseThrow(()-> new CommentsException.CommentsNotFoundException("존재하지 않는 댓글입니다."));
+    }
 
+    public void ensureCommentMatchPost(Long parentCommentId, Long postId) {
+        CommentsEntity commentsEntity = findCommentById(parentCommentId);
+        if (!commentsEntity.getPostId().equals(postId)) {
+            throw new CommentsException.CommentsNotMatchPostException("댓글 정보를 확인하세요.");
+        }
     }
 
     public void ensureCommentMatchUser(Long commentId, Long userId) {
-        CommentsEntity commentsEntity = commentsCsvRepository.findById(commentId).get();
+        CommentsEntity commentsEntity = findCommentById(commentId);
         if(!commentsEntity.getCommentWriterId().equals(userId)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "댓글에 대한 권한이 없습니다.");
+            throw new CommentsException.CommentsUnauthorizedException("댓글에 대한 권한이 없습니다.");
         }
 
     }
@@ -86,7 +91,7 @@ public class CommentService {
             ensureCommentMatchPost(parentCommentId, postId);
         }
         CommentsEntity commentsEntity = commentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
-        commentsCsvRepository.saveComment(commentsEntity);
+        commentsCsvRepository.save(commentsEntity);
         return CreateCommentResponse.of(postId);
     }
 
@@ -113,7 +118,7 @@ public class CommentService {
         ensureCommentMatchUser(commentId, userId);
         ensureCommentMatchPost(postId, commentId);
 
-        commentsCsvRepository.deleteComment(commentId);
+        commentsCsvRepository.delete(commentId);
         return SimpleResponse.forDeleteComment(userId, commentId);
     }
 

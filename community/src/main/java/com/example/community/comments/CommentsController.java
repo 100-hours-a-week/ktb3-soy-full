@@ -1,6 +1,6 @@
 package com.example.community.comments;
 
-import com.example.community.dto.SimpleResponse;
+import com.example.community.common.dto.SimpleResponse;
 import com.example.community.comments.dto.CommentsViewResponse;
 import com.example.community.comments.dto.CreateCommentRequest;
 import com.example.community.comments.dto.CreateCommentResponse;

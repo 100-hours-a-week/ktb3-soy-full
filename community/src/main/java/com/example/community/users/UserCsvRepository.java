@@ -49,19 +49,36 @@ public class UserCsvRepository implements UserRepository {
         init();
     }
 
-    public Boolean verifyUser(Long userId){
-        return userStore.containsKey(userId);
-    }
-
     @Override
-    public ArrayList<UserEntity> findAll() {
-        return new ArrayList<>(userStore.values());
-    }
+    public ArrayList<UserEntity> findAll() {return new ArrayList<>(userStore.values());}
 
     @Override
     public Optional<UserEntity> findById(Long id) {
         return Optional.ofNullable(userStore.get(id));
     }
+
+    @Override
+    public Optional<UserEntity> findByNickname(String nickname) {
+        return userStore.values().stream()
+                .filter(item -> item.getUserNickname().equals(nickname))
+                .findAny();
+    }
+
+    @Override
+    public Optional<UserEntity> findByEmail(String email) {
+        return userStore.values().stream()
+                .filter(item -> item.getUserEmail().equals(email))
+                .findAny();
+    }
+
+    @Override
+    public ArrayList<UserEntity> findAllByIds(List<Long> ids) {
+        return userStore.entrySet().stream()
+                .filter(entry -> ids.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 
     public Optional<UserEntity> findNotDeletedById(Long id) {
         UserEntity userEntity = userStore.get(id);
@@ -71,31 +88,13 @@ public class UserCsvRepository implements UserRepository {
         return Optional.empty();
     }
 
-
-    public Optional<UserEntity> findByNickname(String nickname) {
-        return userStore.values().stream()
-                .filter(item -> item.getUserNickname().equals(nickname))
-                .findAny();
-    }
-
-    public Optional<UserEntity> findByEmail(String email) {
-        return userStore.values().stream()
-                .filter(item -> item.getUserEmail().equals(email))
-                .findAny();
-    }
-
     @Override
-    public void save(UserEntity userEntity) {
-        long userNextId = sequence.incrementAndGet();
-        userEntity.setUserId(userNextId);
-        userStore.put(userEntity.getUserId(), userEntity);
-    }
-
     public void editPassword(UserEntity userEntity, String newPassword) {
         userEntity.setUserPassword(newPassword);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
+    @Override
     public void editProfile(UserEntity userEntity, String newNickname, String newProfileImgUrl) {
         if (!(newProfileImgUrl == null || newProfileImgUrl.isEmpty())) {
             userEntity.setUserProfileImgUrl(newProfileImgUrl);
@@ -104,14 +103,29 @@ public class UserCsvRepository implements UserRepository {
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
-    public void softDelete(UserEntity userEntity) {
+    @Override
+    public UserEntity save(UserEntity userEntity) {
+        long userNextId = sequence.incrementAndGet();
+        userEntity.setUserId(userNextId);
+        userStore.put(userEntity.getUserId(), userEntity);
+        return userEntity;
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userStore.containsKey(id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        UserEntity userEntity = userStore.get(id);
         userEntity.setUserIsDeleted(true);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
-    public List<UserEntity> findAllById(List<Long> ids) {
-        return userStore.values().stream().filter(
-                item -> ids.contains(item.getUserId())
-        ).collect(Collectors.toList());
+    @Override
+    public void softDelete(UserEntity userEntity) {
+        userEntity.setUserIsDeleted(true);
+        userStore.put(userEntity.getUserId(), userEntity);
     }
 }

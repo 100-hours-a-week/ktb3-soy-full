@@ -1,6 +1,7 @@
 package com.example.community.posts;
 
 import com.example.community.posts.dto.PostEntity;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
@@ -11,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class PostCsvRepository {
+public class PostCsvRepository implements PostRepository {
     public final Map<Long, PostEntity> postStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
     private final String postDbPath = "src/main/resources/data/posts.csv";
@@ -34,6 +35,7 @@ public class PostCsvRepository {
         );
     }
 
+    @PostConstruct
     private void init() throws IOException {
         File file = new File(postDbPath);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -50,46 +52,57 @@ public class PostCsvRepository {
         init();
     }
 
-    public List<PostEntity> findPageOfPosts(Long startPageId, Long endPageId){
-        // 정렬
-        List<PostEntity> sortedPostEntityList = postStore.values().stream().sorted(
-                Comparator.comparing(PostEntity::getPostCreatedAt).reversed()
-        ).toList();
-
-        return sortedPostEntityList.subList(Math.toIntExact(startPageId), Math.toIntExact(endPageId));
-    }
-
-    public Boolean verifyPostId(Long postId){
-        return postStore.containsKey(postId);
-    }
-
-    public Optional<PostEntity> findPostById(Long postId){
+    @Override
+    public Optional<PostEntity> findById(Long postId) {
         return Optional.ofNullable(postStore.get(postId));
     }
 
-    public Long savePost(PostEntity postEntity){
-        postEntity.setPostId(sequence.getAndIncrement());
-        postStore.put(postEntity.getPostId(), postEntity);
-        return postEntity.getPostId();
+    @Override
+    public ArrayList<PostEntity> findAll() {
+        return new ArrayList<>(postStore.values());
     }
 
-    public void updatePost(PostEntity postEntity){
+    @Override
+    public PostEntity save(PostEntity postEntity) {
+        postEntity.setPostId(sequence.incrementAndGet());
         postStore.put(postEntity.getPostId(), postEntity);
+        return postEntity;
     }
 
-    public void deletePost(Long postId){
+    @Override
+    public void delete(Long postId) {
         postStore.remove(postId);
     }
 
-    public void likePost(Long postId){
+    @Override
+    public boolean existsById(Long postId) {
+        return postStore.containsKey(postId);
+    }
+
+    @Override
+    public void edit(PostEntity postEntity){
+        postStore.put(postEntity.getPostId(), postEntity);
+    }
+
+    @Override
+    public void incrementLikeCount(Long postId){
         PostEntity postEntity = postStore.get(postId);
         postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
         postStore.put(postId, postEntity);
     }
 
-    public void dislikePost(Long postId){
+    @Override
+    public void decrementLikeCount(Long postId){
         PostEntity postEntity = postStore.get(postId);
         postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() - 1);
         postStore.put(postId, postEntity);
+    }
+
+    @Override
+    public List<PostEntity> findPagedPosts(Long startPageId, Long endPageId){
+        List<PostEntity> sortedPostEntityList = postStore.values().stream().sorted(
+                Comparator.comparing(PostEntity::getPostCreatedAt).reversed()
+        ).toList();
+        return sortedPostEntityList.subList(Math.toIntExact(startPageId), Math.toIntExact(endPageId));
     }
 }

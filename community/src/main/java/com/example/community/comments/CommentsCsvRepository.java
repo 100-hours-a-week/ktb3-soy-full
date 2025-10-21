@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
-public class CommentsCsvRepository {
+public class CommentsCsvRepository implements CommentsRepository {
     public final Map<Long, CommentsEntity> commentsStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
     private final String commentsDbPath = "src/main/resources/data/comments.csv";
@@ -50,33 +50,47 @@ public class CommentsCsvRepository {
         }
     }
 
-    public List<CommentsEntity> getComments(Long postId) {
-        List<CommentsEntity> commentsEntities = commentsStore.values().stream()
-                .filter(commentsEntity -> commentsEntity.getPostId().equals(postId))
-                .collect(Collectors.toList());
-        return commentsEntities;
-    }
-
+    @Override
     public Optional<CommentsEntity> findById(Long commentId) {
         return Optional.ofNullable(commentsStore.get(commentId));
     }
 
-    public Boolean verifyComment(Long commentId) {
-        return commentsStore.containsKey(commentId);
+    @Override
+    public ArrayList<CommentsEntity> findAll() {
+        return new ArrayList<>(commentsStore.values());
     }
 
-    public void saveComment(CommentsEntity commentsEntity) {
+    @Override
+    public CommentsEntity save(CommentsEntity commentsEntity) {
         Long newCommentId = sequence.incrementAndGet();
         commentsEntity.setCommentId(newCommentId);
         commentsStore.put(newCommentId, commentsEntity);
+        return commentsEntity;
     }
+
+    @Override
+    public void delete(Long id) {
+        commentsStore.remove(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return commentsStore.containsKey(id);
+    }
+
+    @Override
+    public ArrayList<CommentsEntity> getCommentsByPostId(Long postId) {
+        List<CommentsEntity> commentsEntityList = commentsStore.values().stream()
+                .filter(commentsEntity -> commentsEntity.getPostId().equals(postId))
+                .collect(Collectors.toList());
+        return new ArrayList<>(commentsEntityList);
+    }
+
+    @Override
     public void editComment(Long commentId, String newCommentContent) {
         CommentsEntity commentsEntity = commentsStore.get(commentId);
         commentsEntity.setCommentContent(newCommentContent);
         commentsStore.put(commentsEntity.getCommentId(), commentsEntity);
     }
 
-    public void deleteComment(Long commentId) {
-        commentsStore.remove(commentId);
-    }
 }

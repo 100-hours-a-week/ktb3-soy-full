@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.common.dto;
 
 public class SimpleResponse {
     private String useCase;
@@ -11,14 +11,6 @@ public class SimpleResponse {
         this.useCase = useCase;
         this.postId = postId;
         this.userId = userId;
-    }
-
-    public static SimpleResponse forLikePost(Long postId, Long userId) {
-        return new SimpleResponse("LikePost", postId, userId);
-    }
-
-    public static SimpleResponse forDislikePost(Long postId, Long userId) {
-        return new SimpleResponse("DislikePost", postId, userId);
     }
 
     public static SimpleResponse forEditPost(Long userId, Long postId) {

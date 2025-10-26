@@ -2,6 +2,7 @@ package com.example.community.users;
 
 import com.example.community.users.dto.*;
 import com.example.community.users.entity.UserEntity;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,13 @@ import java.util.Map;
 public class UsersService {
     Utility utility = new Utility();
     private UserCsvRepository repository;
+    private DomainValidator domainValidator;
     @Autowired
-    public UsersService(UserCsvRepository userCsvRepository) {
+    public UsersService(
+            UserCsvRepository userCsvRepository,
+            DomainValidator domainValidator) {
         this.repository = userCsvRepository;
+        this.domainValidator = domainValidator;
     }
 
     private static final String DEFAULT_PROFILE_IMG = "src/main/resources/images/defaultProfile.jpg";
@@ -93,26 +98,40 @@ public class UsersService {
         return authInfoMap;
     }
 
-    public UserEntity findUserByEmail(String email){
-        return repository.findByEmail(email).orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
-    }
-
-    public UserEntity findUserById(Long id){
-        return repository.findById(id).orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
-    }
-
     public void verifyPassword(UserEntity userEntity, String givenPassword){
         if(!userEntity.isPasswordMatch(givenPassword)){
             throw new UserException.WrongPasswordException("잘못된 비밀번호입니다.");
         }
     }
 
+    private UserEntity getUserEntityByEmail(String email){
+        UserEntity userEntity = repository.findByEmail(email)
+                .orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        if (userEntity.getUserIsDeleted()){
+            throw new UserException.UserNotFoundException("탈퇴한 유저입니다.");
+        }
+        return userEntity;
+    }
+
+    private UserEntity getUserEntityById(Long id){
+        UserEntity userEntity = repository.findById(id)
+                .orElseThrow(() -> new UserException.UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        if (userEntity.getUserIsDeleted()){
+            throw new UserException.UserNotFoundException("탈퇴한 유저입니다.");
+        }
+        return userEntity;
+    }
+
     public SignInResponse signIn(SignInRequest signInRequest) {
 
         String email = signInRequest.getUserEmail();
         String password = signInRequest.getUserPassword();
-        UserEntity userEntity = findUserByEmail(email);
+
+        UserEntity userEntity = getUserEntityByEmail(email);
         verifyPassword(userEntity, password);
+
         Map<String,String> authInfoMap = getAuthInfoMap();
 
         return new SignInResponse(
@@ -126,7 +145,7 @@ public class UsersService {
         String oldPassword = editPasswordRequest.getUserOldPassword();
         String newPassword = editPasswordRequest.getUserNewPassword();
 
-        UserEntity userEntity = findUserById(id);
+        UserEntity userEntity = getUserEntityById(id);
 
         String realOldPassword = userEntity.getUserPassword();
 
@@ -147,7 +166,7 @@ public class UsersService {
     }
 
     public SimpleResponse editProfile(Long id, EditProfileRequest editProfileRequest) {
-        UserEntity userEntity = findUserById(id);
+        UserEntity userEntity = getUserEntityById(id);
 
         String newNickname = editProfileRequest.getUserNickname();
         String newProfileImgUrl = editProfileRequest.getUserProfileImgUrl();
@@ -177,7 +196,7 @@ public class UsersService {
     }
 
     public SimpleResponse softDelete(Long id) {
-        UserEntity userEntity = findUserById(id);
+        UserEntity userEntity = getUserEntityById(id);
 
         if (userEntity.getUserIsDeleted()) {
             throw new UserException.UserNotFoundException("존재하지 않는 사용자입니다.");

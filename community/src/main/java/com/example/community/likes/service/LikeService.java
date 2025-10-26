@@ -9,29 +9,24 @@ import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
 import com.example.community.users.UserException;
 import com.example.community.users.entity.UserEntity;
+import com.example.community.validator.DomainValidator;
 
 public abstract class LikeService {
     public PostCsvRepository postCsvRepository;
     public CommentsCsvRepository commentsCsvRepository;
     public UserCsvRepository userCsvRepository;
     public LikeCsvRepository likeCsvRepository;
+    public DomainValidator domainValidator;
+
     private Utility utility = new Utility();
+
     protected String contentType;
     public LikeService(){}
-
-    public void validateUser(Long userId) {
-        UserEntity userEntity = userCsvRepository.findById(userId).orElseThrow(
-                () -> new UserException.UserNotFoundException("존재하지 않는 유저입니다.")
-        );
-        if (userEntity.getUserIsDeleted()){
-            throw new UserException.UserNotFoundException("존재하지 않는 유저입니다.");
-        }
-    }
 
     public abstract void validateContent(Long contentId);
 
     public SimpleResponse like(Long contentId, Long userId) {
-        validateUser(userId);
+        domainValidator.validateUserExistById(userId);
         validateContent(contentId);
         String createdAt = utility.getCreatedAt();
         LikeEntity likeEntity = LikeEntity.of(
@@ -48,7 +43,7 @@ public abstract class LikeService {
     }
 
     public SimpleResponse unlike(Long contentId, Long userId) {
-        validateUser(userId);
+        domainValidator.validateUserExistById(userId);
         validateContent(contentId);
         likeCsvRepository.deleteByContentAndUserID(contentId, userId);
         return SimpleResponse.forUnlike(

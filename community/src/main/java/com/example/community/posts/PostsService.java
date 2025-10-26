@@ -6,6 +6,7 @@ import com.example.community.users.UserException;
 import com.example.community.users.entity.UserEntity;
 import com.example.community.users.UserCsvRepository;
 import com.example.community.common.dto.SimpleResponse;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,14 +21,16 @@ import java.util.stream.Collectors;
 public class PostsService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
+    private DomainValidator domainValidator;
     private PostAssembler postAssembler = new PostAssembler();
 
-
-
     @Autowired
-    public PostsService(PostCsvRepository postCsvRepository, UserCsvRepository userCsvRepository) {
+    public PostsService(PostCsvRepository postCsvRepository,
+                        UserCsvRepository userCsvRepository,
+                        DomainValidator postValidator) {
         this.postCsvRepository = postCsvRepository;
         this.userCsvRepository = userCsvRepository;
+        this.domainValidator = postValidator;
     }
 
     private void verifyUser(UserEntity userEntity) {
@@ -45,14 +48,8 @@ public class PostsService {
                 .orElseThrow(() -> new PostException.PostNotFoundException("존재하지 않는 게시글입니다."));
     }
 
-    public void validatePost(Long postId) {
-        if (!postCsvRepository.existsById(postId)){
-            throw new PostException.PostNotFoundException("존재하지 않는 게시글입니다.");
-        }
-    }
-
     public PostDetailResponse viewPostDetail(Long postId) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         UserEntity writerEntity = findUserById(postEntity.getPostWriterId());
         verifyUser(writerEntity);
@@ -163,7 +160,7 @@ public class PostsService {
     }
 
     public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
@@ -175,7 +172,7 @@ public class PostsService {
     }
 
     public SimpleResponse deletePost(Long postId, Long userId) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         postCsvRepository.delete(postId);

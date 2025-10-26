@@ -1,6 +1,6 @@
 package com.example.community.posts;
 
-import com.example.community.posts.dto.PostEntity;
+import com.example.community.posts.entity.PostEntity;
 import com.example.community.repository.Repository;
 
 import java.util.List;

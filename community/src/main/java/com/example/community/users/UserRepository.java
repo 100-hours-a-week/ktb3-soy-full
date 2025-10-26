@@ -1,7 +1,7 @@
 package com.example.community.users;
 
 import com.example.community.repository.Repository;
-import com.example.community.users.dto.UserEntity;
+import com.example.community.users.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;

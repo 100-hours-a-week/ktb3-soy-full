@@ -4,7 +4,7 @@ import com.example.community.comments.CommentsCsvRepository;
 import com.example.community.likes.repository.LikeCsvRepository;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.posts.PostException;
-import com.example.community.posts.dto.PostEntity;
+import com.example.community.posts.entity.PostEntity;
 import com.example.community.users.UserCsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

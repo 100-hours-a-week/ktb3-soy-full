@@ -10,12 +10,11 @@ public class CommentAssembler {
                                    Long userId,
                                    Long parentId,
                                    String commentContent){
-        CommentsEntity commentsEntity = new CommentsEntity();
-        commentsEntity.setPostId(postId);
-        commentsEntity.setCommentWriterId(userId);
-        commentsEntity.setParentCommentId(parentId);
-        commentsEntity.setCommentContent(commentContent);
-        commentsEntity.setCommentCreatedAt(util.getCreatedAt());
-        return commentsEntity;
+        return CommentsEntity.builder()
+                .postId(postId)
+                .commentWriterId(userId)
+                .parentCommentId(parentId)
+                .commentContent(commentContent)
+                .build();
     }
 }

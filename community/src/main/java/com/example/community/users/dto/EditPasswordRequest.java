@@ -2,7 +2,9 @@ package com.example.community.users.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
 
+@Getter
 public class EditPasswordRequest {
     private static final String PW_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,20}$";
 
@@ -17,9 +19,4 @@ public class EditPasswordRequest {
         this.userOldPassword = userOldPassword;
         this.userNewPassword = userNewPassword;
     }
-
-    public String getUserOldPassword() {return userOldPassword;}
-    public void setUserOldPassword(String userOldPassword) {this.userOldPassword = userOldPassword;}
-    public String getUserNewPassword() {return userNewPassword;}
-    public void setUserNewPassword(String userNewPassword) {this.userNewPassword = userNewPassword;}
 }

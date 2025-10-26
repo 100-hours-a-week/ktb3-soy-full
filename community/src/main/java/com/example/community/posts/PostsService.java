@@ -1,8 +1,9 @@
 package com.example.community.posts;
 
 import com.example.community.posts.dto.*;
+import com.example.community.posts.entity.PostEntity;
 import com.example.community.users.UserException;
-import com.example.community.users.dto.UserEntity;
+import com.example.community.users.entity.UserEntity;
 import com.example.community.users.UserCsvRepository;
 import com.example.community.common.dto.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class PostsService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
     private PostAssembler postAssembler = new PostAssembler();
-    private static final String DEFAULT_POST_IMG = "src/main/resources/images/defaultProfile.jpg";
+
 
 
     @Autowired
@@ -109,9 +110,13 @@ public class PostsService {
         List<PostEntity> paginatedPosts = postCsvRepository.findPagedPosts(startPageId, endPageId);
         List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts);
 
-        PagingMetaResponse pagingMetaResponse = new PagingMetaResponse(
-                pageNumber, pageSize, totalPosts, totalPages, "createdAt,desc"
-        );
+        PagingMetaResponse pagingMetaResponse = PagingMetaResponse.builder()
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .totalPosts(totalPosts)
+                .totalPages(totalPages)
+                .sortCondition("createdAt,desc")
+                .build();
 
         return new PostListResponse(
                 postItemResponseList,
@@ -120,9 +125,7 @@ public class PostsService {
     }
 
     public PostCreateResponse createPost(Long userId, PostCreateRequest postCreateRequest) {
-        if (postCreateRequest.getPostImageUrl() == ""){
-            postCreateRequest.setPostImageUrl(DEFAULT_POST_IMG);
-        }
+        postCreateRequest.updatePostImageUrl(postCreateRequest.getPostImageUrl());
 
         UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
                 .orElseThrow(() -> new PostException.PostNotAuthorizedException("게시글을 작성할 수 없습니다."));
@@ -142,21 +145,15 @@ public class PostsService {
     }
 
     public void editPostTitle(PostEntity postEntity, String newTitle) {
-        if (newTitle != null & newTitle != ""){
-            postEntity.setPostTitle(newTitle);
-        }
+        postEntity.updatePostTitle(newTitle);
     }
 
     public void editPostContent(PostEntity postEntity, String newContent) {
-        if (newContent != null & newContent != ""){
-            postEntity.setPostContent(newContent);
-        }
+        postEntity.updatePostContent(newContent);
     }
 
     public void editPostImgUrl(PostEntity postEntity, String newImageUrl) {
-        if (newImageUrl != null & newImageUrl != ""){
-            postEntity.setPostImgUrl(newImageUrl);
-        }
+        postEntity.updatePostImgUrl(newImageUrl);
     }
 
     public void ensureUserIsPostWriter(Long postWriterId, Long userId){

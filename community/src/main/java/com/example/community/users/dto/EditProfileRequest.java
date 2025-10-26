@@ -1,9 +1,11 @@
 package com.example.community.users.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
+@Getter
 public class EditProfileRequest {
     @NotBlank
     @Length(max=10)
@@ -19,8 +21,4 @@ public class EditProfileRequest {
         this.userNickname = userNickname;
         this.userProfileImgUrl = userProfileImgUrl;
     }
-    public String getUserNickname() {return userNickname;}
-    public void setUserNickname(String userNickname) {this.userNickname = userNickname;}
-    public String getUserProfileImgUrl() {if (userProfileImgUrl != null) return userProfileImgUrl; else return "";}
-    public void setUserProfileImgUrl(String userProfileImgUrl) {this.userProfileImgUrl = userProfileImgUrl;}
 }

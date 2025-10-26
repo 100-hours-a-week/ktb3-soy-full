@@ -1,9 +1,11 @@
 package com.example.community.posts.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 @Schema(description = "게시글 목록보기 DTO")
 public class PostListResponse {
 
@@ -17,9 +19,4 @@ public class PostListResponse {
         this.postItemResponseList = postItemResponseList;
         this.pagingMeta = pagingMeta;
     }
-
-    public List<PostItemResponse> getPostItemResponseList() {return postItemResponseList;}
-    public void setPostItemResponseList(List<PostItemResponse> postItemResponseList) {this.postItemResponseList = postItemResponseList;}
-    public PagingMetaResponse getPagingMeta() {return pagingMeta;}
-    public void setPagingMeta(PagingMetaResponse pagingMeta) {this.pagingMeta = pagingMeta;}
 }

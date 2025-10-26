@@ -25,7 +25,13 @@ public class CommentsCsvRepository implements CommentsRepository {
         Long writerId = parseLong(parts[3]);
         String commentContent = parts[4];
         String createdAt = parts[5];
-        return new CommentsEntity(commentId, parentCommentId, postId, writerId, commentContent, createdAt);
+        return CommentsEntity.builder()
+                .commentId(commentId)
+                .parentCommentId(parentCommentId)
+                .postId(postId)
+                .commentWriterId(writerId)
+                .commentContent(commentContent)
+                .commentCreatedAt(createdAt).build();
     }
 
     public Long parseLong(String value){
@@ -63,7 +69,7 @@ public class CommentsCsvRepository implements CommentsRepository {
     @Override
     public CommentsEntity save(CommentsEntity commentsEntity) {
         Long newCommentId = sequence.incrementAndGet();
-        commentsEntity.setCommentId(newCommentId);
+        commentsEntity.updateId(newCommentId);
         commentsStore.put(newCommentId, commentsEntity);
         return commentsEntity;
     }
@@ -89,7 +95,7 @@ public class CommentsCsvRepository implements CommentsRepository {
     @Override
     public void editComment(Long commentId, String newCommentContent) {
         CommentsEntity commentsEntity = commentsStore.get(commentId);
-        commentsEntity.setCommentContent(newCommentContent);
+        commentsEntity.updateContent(newCommentContent);
         commentsStore.put(commentsEntity.getCommentId(), commentsEntity);
     }
 

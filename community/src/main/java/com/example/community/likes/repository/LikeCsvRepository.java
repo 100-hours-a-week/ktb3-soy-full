@@ -24,7 +24,7 @@ public abstract class LikeCsvRepository{
         Long contentId = Long.valueOf(line.split(",")[0]);
         Long userId = Long.valueOf(line.split(",")[1]);
         String createdAt = line.split(",")[2];
-        return new LikeEntity(contentId, userId, createdAt);
+        return LikeEntity.of(contentId, userId, createdAt);
     }
 
     public void initFromFile() {

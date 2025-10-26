@@ -1,6 +1,7 @@
 package com.example.community.users;
 
 import com.example.community.users.dto.*;
+import com.example.community.users.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -58,16 +59,16 @@ public class UsersService {
         }
 
         // 데이터 저장
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserEmail(email);
-        userEntity.setUserPassword(password);
-        userEntity.setUserNickname(nickname);
-        userEntity.setUserProfileImgUrl(profileImgUrl);
-        userEntity.setUserCreatedAt(createdAt);
-        userEntity.setUserIsDeleted(false);
+        UserEntity userEntity = UserEntity.builder()
+                .userEmail(email)
+                .userPassword(password)
+                .userNickname(nickname)
+                .userProfileImgUrl(profileImgUrl)
+                .userCreatedAt(createdAt)
+                .userIsDeleted(false).build();
         repository.save(userEntity);
 
-        return new SignUpResponse(email, nickname, createdAt);
+        return SignUpResponse.create(email, nickname, createdAt);
     }
 
     private String getAccessToken(){
@@ -174,8 +175,6 @@ public class UsersService {
                 userEntity.getUserNickname()
         );
     }
-
-
 
     public SimpleResponse softDelete(Long id) {
         UserEntity userEntity = findUserById(id);

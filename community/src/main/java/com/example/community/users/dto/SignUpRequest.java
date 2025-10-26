@@ -1,9 +1,13 @@
 package com.example.community.users.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
+@Builder
+@Getter
 public class SignUpRequest {
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -24,28 +28,4 @@ public class SignUpRequest {
 
     @URL(message="유효하지 않은 url입니다.")
     private String userProfileImgUrl;
-
-    public SignUpRequest() {}
-
-    public SignUpRequest(String userEmail, String userPassword, String userNickname) {
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userNickname = userNickname;
-    }
-
-    public SignUpRequest(String userEmail, String userPassword, String userNickname, String userProfileImgUrl) {
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userNickname = userNickname;
-        this.userProfileImgUrl = userProfileImgUrl;
-    }
-
-    public String getUserEmail() {return userEmail;}
-    public void setUserEmail(String userEmail) {this.userEmail = userEmail;}
-    public String getUserPassword() {return userPassword;}
-    public void setUserPassword(String userPassword) {this.userPassword = userPassword;}
-    public String getUserNickname() {return userNickname;}
-    public void setUserNickname(String userNickname) {this.userNickname = userNickname;}
-    public String getUserProfileImgUrl() {return userProfileImgUrl;}
-    public void setUserProfileImgUrl(String userProfileImgUrl) {this.userProfileImgUrl = userProfileImgUrl;}
 }

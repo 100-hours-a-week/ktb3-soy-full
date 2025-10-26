@@ -1,7 +1,10 @@
 package com.example.community.posts.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Schema(description = "게시글 생성 응답 DTO")
 public class PostCreateResponse {
 
@@ -23,7 +26,7 @@ public class PostCreateResponse {
     )
     private String redirectUri;
 
-    public PostCreateResponse(String message, Long postId, String redirectUri) {
+    private PostCreateResponse(String message, Long postId, String redirectUri) {
         this.message = message;
         this.postId = postId;
         this.redirectUri = redirectUri;
@@ -36,8 +39,4 @@ public class PostCreateResponse {
                 "/posts/" + postId
         );
     }
-
-    public String getMessage() {return message;}
-    public Long getPostId() {return postId;}
-    public String getRedirectUri() {return redirectUri;}
 }

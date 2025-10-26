@@ -6,12 +6,9 @@ import com.example.community.likes.dto.SimpleResponse;
 import com.example.community.likes.entity.LikeEntity;
 import com.example.community.likes.repository.LikeCsvRepository;
 import com.example.community.posts.PostCsvRepository;
-import com.example.community.posts.dto.PostEntity;
 import com.example.community.users.UserCsvRepository;
 import com.example.community.users.UserException;
-import com.example.community.users.dto.UserEntity;
-
-import java.util.Optional;
+import com.example.community.users.entity.UserEntity;
 
 public abstract class LikeService {
     public PostCsvRepository postCsvRepository;
@@ -37,7 +34,7 @@ public abstract class LikeService {
         validateUser(userId);
         validateContent(contentId);
         String createdAt = utility.getCreatedAt();
-        LikeEntity likeEntity = new LikeEntity(
+        LikeEntity likeEntity = LikeEntity.of(
                 contentId,
                 userId,
                 createdAt

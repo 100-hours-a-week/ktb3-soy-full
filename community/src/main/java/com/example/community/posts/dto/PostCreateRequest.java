@@ -1,7 +1,11 @@
 package com.example.community.posts.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
+import lombok.Getter;
 
+@Builder(toBuilder = true)
+@Getter
 public class PostCreateRequest {
     @NotBlank
     private String postTitle;
@@ -9,24 +13,8 @@ public class PostCreateRequest {
     private String postContent;
 
     private String postImageUrl;
-    public PostCreateRequest() {}
 
-    public PostCreateRequest(String postTitle, String postContent) {
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.postImageUrl = "";
-    }
-
-    public PostCreateRequest(String postTitle, String postContent, String postImageUrl) {
-        this.postTitle = postTitle;
-        this.postContent = postContent;
+    public void updatePostImageUrl(String postImageUrl) {
         this.postImageUrl = postImageUrl;
     }
-
-    public String getPostTitle() {return postTitle;}
-    public void setPostTitle(String postTitle) {this.postTitle = postTitle;}
-    public String getPostContent() {return postContent;}
-    public void setPostContent(String postContent) {this.postContent = postContent;}
-    public String getPostImageUrl() {return postImageUrl;}
-    public void setPostImageUrl(String postImageUrl) {this.postImageUrl = postImageUrl;}
 }

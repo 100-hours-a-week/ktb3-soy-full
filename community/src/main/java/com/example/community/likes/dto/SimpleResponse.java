@@ -1,7 +1,9 @@
 package com.example.community.likes.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 @Schema(description = "좋아요 간단 응답")
 public class SimpleResponse {
 
@@ -29,8 +31,4 @@ public class SimpleResponse {
     public static SimpleResponse forUnlike(String contentType, Long contentId, Long userId) {
         return new SimpleResponse("Unlike " + contentType, contentId, userId);
     }
-
-    public String getContentType() {return contentType;}
-    public Long getContentId() {return contentId;}
-    public Long getUserId() {return userId;}
 }

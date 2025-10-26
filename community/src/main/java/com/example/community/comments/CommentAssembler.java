@@ -4,18 +4,15 @@ import com.example.community.Utility;
 import com.example.community.comments.dto.CommentsEntity;
 
 public class CommentAssembler {
-    Utility util = new Utility();
-    public CommentAssembler(){}
-    public CommentsEntity toEntity(Long postId,
+    public static CommentsEntity toEntity(Long postId,
                                    Long userId,
                                    Long parentId,
                                    String commentContent){
-        CommentsEntity commentsEntity = new CommentsEntity();
-        commentsEntity.setPostId(postId);
-        commentsEntity.setCommentWriterId(userId);
-        commentsEntity.setParentCommentId(parentId);
-        commentsEntity.setCommentContent(commentContent);
-        commentsEntity.setCommentCreatedAt(util.getCreatedAt());
-        return commentsEntity;
+        return CommentsEntity.builder()
+                .postId(postId)
+                .commentWriterId(userId)
+                .parentCommentId(parentId)
+                .commentContent(commentContent)
+                .build();
     }
 }

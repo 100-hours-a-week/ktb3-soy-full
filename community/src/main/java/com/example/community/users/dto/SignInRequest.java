@@ -2,7 +2,9 @@ package com.example.community.users.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
+@Getter
 public class SignInRequest {
 
     @NotBlank
@@ -17,9 +19,4 @@ public class SignInRequest {
         this.userEmail = email;
         this.userPassword = password;
     }
-
-    public String getUserEmail() {return userEmail;}
-    public void setUserEmail(String userEmail) {this.userEmail = userEmail;}
-    public String getUserPassword() {return userPassword;}
-    public void setUserPassword(String userPassword) {this.userPassword = userPassword;}
 }

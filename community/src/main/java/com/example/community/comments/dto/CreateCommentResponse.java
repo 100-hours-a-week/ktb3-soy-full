@@ -1,7 +1,9 @@
 package com.example.community.comments.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 @Schema(description = "댓글 생성 응답 DTO")
 public class CreateCommentResponse {
 
@@ -27,8 +29,4 @@ public class CreateCommentResponse {
                 "/posts/%d/comments".formatted(postId)
         );
     }
-
-    public String getMessage() {return message;}
-    public Long getPostId() {return postId;}
-    public String getRedirectUri() {return redirectUri;}
 }

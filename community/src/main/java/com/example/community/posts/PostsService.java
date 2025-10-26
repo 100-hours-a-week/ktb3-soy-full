@@ -1,10 +1,12 @@
 package com.example.community.posts;
 
 import com.example.community.posts.dto.*;
+import com.example.community.posts.entity.PostEntity;
 import com.example.community.users.UserException;
-import com.example.community.users.dto.UserEntity;
+import com.example.community.users.entity.UserEntity;
 import com.example.community.users.UserCsvRepository;
 import com.example.community.common.dto.SimpleResponse;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,15 @@ import java.util.stream.Collectors;
 public class PostsService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
-    private PostAssembler postAssembler = new PostAssembler();
-    private static final String DEFAULT_POST_IMG = "src/main/resources/images/defaultProfile.jpg";
-
+    private DomainValidator domainValidator;
 
     @Autowired
-    public PostsService(PostCsvRepository postCsvRepository, UserCsvRepository userCsvRepository) {
+    public PostsService(PostCsvRepository postCsvRepository,
+                        UserCsvRepository userCsvRepository,
+                        DomainValidator postValidator) {
         this.postCsvRepository = postCsvRepository;
         this.userCsvRepository = userCsvRepository;
+        this.domainValidator = postValidator;
     }
 
     private void verifyUser(UserEntity userEntity) {
@@ -44,18 +47,12 @@ public class PostsService {
                 .orElseThrow(() -> new PostException.PostNotFoundException("존재하지 않는 게시글입니다."));
     }
 
-    public void validatePost(Long postId) {
-        if (!postCsvRepository.existsById(postId)){
-            throw new PostException.PostNotFoundException("존재하지 않는 게시글입니다.");
-        }
-    }
-
     public PostDetailResponse viewPostDetail(Long postId) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         UserEntity writerEntity = findUserById(postEntity.getPostWriterId());
         verifyUser(writerEntity);
-        PostDetailResponse poseDetailResponse = postAssembler.toDetailResponse(postEntity, writerEntity);
+        PostDetailResponse poseDetailResponse = PostAssembler.toDetailResponse(postEntity, writerEntity);
         return poseDetailResponse;
     }
 
@@ -79,7 +76,7 @@ public class PostsService {
         Map<Long, UserEntity> uniqueWriterMap = userCsvRepository.findAllByIds(uniqueWriterIds)
                 .stream().collect(Collectors.toMap(UserEntity::getUserId, Function.identity()));
         return postEntityList.stream()
-                .map(post -> postAssembler.toPostItemResponse(post, uniqueWriterMap.get(post.getPostWriterId())))
+                .map(post -> PostAssembler.toPostItemResponse(post, uniqueWriterMap.get(post.getPostWriterId())))
                 .toList();
     }
 
@@ -109,9 +106,13 @@ public class PostsService {
         List<PostEntity> paginatedPosts = postCsvRepository.findPagedPosts(startPageId, endPageId);
         List<PostItemResponse> postItemResponseList = getPostItemResponseList(paginatedPosts);
 
-        PagingMetaResponse pagingMetaResponse = new PagingMetaResponse(
-                pageNumber, pageSize, totalPosts, totalPages, "createdAt,desc"
-        );
+        PagingMetaResponse pagingMetaResponse = PagingMetaResponse.builder()
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .totalPosts(totalPosts)
+                .totalPages(totalPages)
+                .sortCondition("createdAt,desc")
+                .build();
 
         return new PostListResponse(
                 postItemResponseList,
@@ -120,14 +121,12 @@ public class PostsService {
     }
 
     public PostCreateResponse createPost(Long userId, PostCreateRequest postCreateRequest) {
-        if (postCreateRequest.getPostImageUrl() == ""){
-            postCreateRequest.setPostImageUrl(DEFAULT_POST_IMG);
-        }
+        postCreateRequest.updatePostImageUrl(postCreateRequest.getPostImageUrl());
 
         UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
                 .orElseThrow(() -> new PostException.PostNotAuthorizedException("게시글을 작성할 수 없습니다."));
 
-        PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
+        PostEntity postEntity = PostAssembler.toEntity(postCreateRequest, userId);
         postCsvRepository.save(postEntity);
         Long postId = postEntity.getPostId();
         return PostCreateResponse.of(postId);
@@ -142,21 +141,15 @@ public class PostsService {
     }
 
     public void editPostTitle(PostEntity postEntity, String newTitle) {
-        if (newTitle != null & newTitle != ""){
-            postEntity.setPostTitle(newTitle);
-        }
+        postEntity.updatePostTitle(newTitle);
     }
 
     public void editPostContent(PostEntity postEntity, String newContent) {
-        if (newContent != null & newContent != ""){
-            postEntity.setPostContent(newContent);
-        }
+        postEntity.updatePostContent(newContent);
     }
 
     public void editPostImgUrl(PostEntity postEntity, String newImageUrl) {
-        if (newImageUrl != null & newImageUrl != ""){
-            postEntity.setPostImgUrl(newImageUrl);
-        }
+        postEntity.updatePostImgUrl(newImageUrl);
     }
 
     public void ensureUserIsPostWriter(Long postWriterId, Long userId){
@@ -166,7 +159,7 @@ public class PostsService {
     }
 
     public SimpleResponse editPost(Long postId, Long userId, PostEditRequest postEditRequest) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         validatePostEditRequest(postEditRequest);
@@ -178,7 +171,7 @@ public class PostsService {
     }
 
     public SimpleResponse deletePost(Long postId, Long userId) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         PostEntity postEntity = findPostById(postId);
         ensureUserIsPostWriter(postEntity.getPostWriterId(), userId);
         postCsvRepository.delete(postId);

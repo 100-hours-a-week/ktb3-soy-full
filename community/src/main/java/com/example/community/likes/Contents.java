@@ -1,8 +1,8 @@
 package com.example.community.likes;
 
 public enum Contents {
-    POST("post", "/Users/soy/Desktop/ktb3-soy-full/community/src/main/resources/data/postLikes.csv"),
-    COMMENT("comment", "/Users/soy/Desktop/ktb3-soy-full/community/src/main/resources/data/commentLikes.csv");
+    POST(LikesConstants.CONTENT_TYPE_POST, LikesConstants.PATH_DB_POSTS_LIKE),
+    COMMENT(LikesConstants.CONTENT_TYPE_COMMENT, LikesConstants.PATH_DB_COMMENTS_LIKE);
 
     private String contentType;
     private String dbPath;

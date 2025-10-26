@@ -1,8 +1,13 @@
 package com.example.community.posts.dto;
 
-import com.example.community.users.dto.WriterSummary;
+import com.example.community.posts.entity.PostCounts;
+import com.example.community.users.entity.WriterSummary;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
 @Schema(description = "게시글 아이템 DTO")
 public class PostItemResponse {
 
@@ -20,23 +25,4 @@ public class PostItemResponse {
 
     @Schema(description = "게시글 개수 정보", example = "{likes:10, views:10, comments:10}")
     private PostCounts postCounts;
-
-    public PostItemResponse(Long postId, WriterSummary writerSummary, String postTitle, String postCreatedAt, PostCounts postCounts) {
-        this.postId = postId;
-        this.writerSummary = writerSummary;
-        this.postTitle = postTitle;
-        this.postCounts = postCounts;
-        this.postCreatedAt = postCreatedAt;
-    }
-
-    public Long getPostId() {return postId;}
-    public void setPostId(Long postId) {this.postId = postId;}
-    public WriterSummary getWriterSummary() {return writerSummary;}
-    public void setWriterSummary(WriterSummary writerSummary) {this.writerSummary = writerSummary;}
-    public String getPostTitle() {return postTitle;}
-    public void setPostTitle(String postTitle) {this.postTitle = postTitle;}
-    public String getPostCreatedAt() {return postCreatedAt;}
-    public void setPostCreatedAt(String postCreatedAt) {this.postCreatedAt = postCreatedAt;}
-    public PostCounts getPostCounts() {return postCounts;}
-    public void setPostCounts(PostCounts postCounts) {this.postCounts = postCounts;}
 }

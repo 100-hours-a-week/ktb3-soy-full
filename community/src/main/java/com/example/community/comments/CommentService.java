@@ -4,11 +4,9 @@ import com.example.community.comments.dto.*;
 import com.example.community.common.dto.SimpleResponse;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
-import com.example.community.users.UserException;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,32 +17,17 @@ public class CommentService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
     private CommentsCsvRepository commentsCsvRepository;
-
-    private CommentAssembler commentAssembler = new CommentAssembler();
+    private DomainValidator domainValidator;
 
     @Autowired
-    public CommentService(CommentsCsvRepository commentsCsvRepository, UserCsvRepository userCsvRepository, PostCsvRepository postCsvRepository) {
+    public CommentService(CommentsCsvRepository commentsCsvRepository,
+                          UserCsvRepository userCsvRepository,
+                          PostCsvRepository postCsvRepository,
+                          DomainValidator domainValidator) {
         this.commentsCsvRepository = commentsCsvRepository;
         this.userCsvRepository = userCsvRepository;
         this.postCsvRepository = postCsvRepository;
-    }
-
-    public void validatePost(Long postId) {
-        if (!postCsvRepository.existsById(postId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
-        }
-    }
-
-    public void validateUser(Long userId){
-        if (!userCsvRepository.existsById(userId)){
-            throw new UserException.UserNotFoundException("존재하지 않는 사용자입니다.");
-        }
-    }
-
-    public void validateComment(Long commentId) {
-        if(!commentsCsvRepository.existsById(commentId)){
-            throw new CommentsException.CommentsNotFoundException("댓글 정보를 찾을 수 없습니다.");
-        }
+        this.domainValidator = domainValidator;
     }
 
     public List<CommentsEntity> sortCommentsByCreatedAt(List<CommentsEntity> commentsEntities) {
@@ -53,7 +36,7 @@ public class CommentService {
     }
 
     public CommentsViewResponse viewComments(Long postId) {
-        validatePost(postId);
+        domainValidator.validatePostExistById(postId);
         List<CommentsEntity> commentsEntities = commentsCsvRepository.getCommentsByPostId(postId);
         commentsEntities = sortCommentsByCreatedAt(commentsEntities);
         return new CommentsViewResponse(commentsEntities);
@@ -84,13 +67,13 @@ public class CommentService {
                                                 Long userId,
                                                 Long parentCommentId
     ) {
-        validatePost(postId);
-        validateUser(userId);
+        domainValidator.validatePostExistById(postId);
+        domainValidator.validateUserExistById(userId);
         if(parentCommentId != null){
-            validateComment(parentCommentId);
+            domainValidator.validateCommentExistById(parentCommentId);
             ensureCommentMatchPost(parentCommentId, postId);
         }
-        CommentsEntity commentsEntity = commentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
+        CommentsEntity commentsEntity = CommentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
         commentsCsvRepository.save(commentsEntity);
         return CreateCommentResponse.of(postId);
     }
@@ -99,9 +82,9 @@ public class CommentService {
                                        Long postId,
                                        Long commentId,
                                        Long userId){
-        validatePost(postId);
-        validateComment(commentId);
-        validateUser(userId);
+        domainValidator.validatePostExistById(postId);
+        domainValidator.validateUserExistById(userId);
+        domainValidator.validateCommentExistById(commentId);
 
         ensureCommentMatchUser(commentId, userId);
         ensureCommentMatchPost(postId, commentId);
@@ -111,9 +94,9 @@ public class CommentService {
     }
 
     public SimpleResponse deleteComments(Long postId, Long commentId, Long userId){
-        validatePost(postId);
-        validateComment(commentId);
-        validateUser(userId);
+        domainValidator.validatePostExistById(postId);
+        domainValidator.validateUserExistById(userId);
+        domainValidator.validateCommentExistById(commentId);
 
         ensureCommentMatchUser(commentId, userId);
         ensureCommentMatchPost(postId, commentId);

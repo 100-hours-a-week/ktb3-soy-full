@@ -1,6 +1,6 @@
 package com.example.community.posts;
 
-import com.example.community.posts.dto.PostEntity;
+import com.example.community.posts.entity.PostEntity;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PostCsvRepository implements PostRepository {
     public final Map<Long, PostEntity> postStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
-    private final String postDbPath = "src/main/resources/data/posts.csv";
 
     private PostEntity createPostEntity(String line){
         String[] parts = line.split(",");
@@ -29,15 +28,22 @@ public class PostCsvRepository implements PostRepository {
         Long commentCounts = Long.parseLong(parts[7]);
         String createdAt = parts[8];
 
-        return new PostEntity(
-                postId, writerId, title, content, imgUrl,
-                likeCounts, viewCounts, commentCounts, createdAt
-        );
+        return PostEntity.builder()
+                .postId(postId)
+                .postWriterId(writerId)
+                .postTitle(title)
+                .postContent(content)
+                .postImgUrl(imgUrl)
+                .postLikeCounts(likeCounts)
+                .postViewCounts(viewCounts)
+                .postCommentCounts(commentCounts)
+                .postCreatedAt(createdAt)
+                .build();
     }
 
     @PostConstruct
     private void init() throws IOException {
-        File file = new File(postDbPath);
+        File file = new File(PostsConstants.PATH_DB);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
         bufferedReader.readLine(); // 칼럼행 건너뛰기
@@ -64,7 +70,7 @@ public class PostCsvRepository implements PostRepository {
 
     @Override
     public PostEntity save(PostEntity postEntity) {
-        postEntity.setPostId(sequence.incrementAndGet());
+        postEntity.updatePostId(sequence.incrementAndGet());
         postStore.put(postEntity.getPostId(), postEntity);
         return postEntity;
     }
@@ -87,14 +93,14 @@ public class PostCsvRepository implements PostRepository {
     @Override
     public void incrementLikeCount(Long postId){
         PostEntity postEntity = postStore.get(postId);
-        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() + 1);
+        postEntity.updateLikeCounts();
         postStore.put(postId, postEntity);
     }
 
     @Override
     public void decrementLikeCount(Long postId){
         PostEntity postEntity = postStore.get(postId);
-        postEntity.setPostLikeCounts(postEntity.getPostLikeCounts() - 1);
+        postEntity.decrementLikeCount();
         postStore.put(postId, postEntity);
     }
 

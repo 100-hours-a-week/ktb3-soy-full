@@ -6,6 +6,7 @@ import com.example.community.comments.dto.CommentsEntity;
 import com.example.community.likes.repository.LikeCsvRepository;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,19 +17,19 @@ public class CommentLikeService extends LikeService {
     public CommentLikeService(UserCsvRepository userCsvRepository,
                               @Qualifier("commentLikeRepository") LikeCsvRepository likeCsvRepository,
                               PostCsvRepository postCsvRepository,
-                              CommentsCsvRepository commentsCsvRepository) {
+                              CommentsCsvRepository commentsCsvRepository,
+                              DomainValidator domainValidator) {
         this.contentType = "comment";
         this.userCsvRepository = userCsvRepository;
         this.likeCsvRepository = likeCsvRepository;
         this.postCsvRepository = postCsvRepository;
         this.commentsCsvRepository = commentsCsvRepository;
+        this.domainValidator = domainValidator;
     }
 
 
     @Override
     public void validateContent(Long contentId) {
-        CommentsEntity entity = commentsCsvRepository.findById(contentId)
-                .orElseThrow(
-                        ()-> new CommentsException.CommentsNotFoundException("존재하지 않는 댓글입니다."));
+        domainValidator.validateCommentExistById(contentId);
     }
 }

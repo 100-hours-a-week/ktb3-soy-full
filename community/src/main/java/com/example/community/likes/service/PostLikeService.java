@@ -4,8 +4,9 @@ import com.example.community.comments.CommentsCsvRepository;
 import com.example.community.likes.repository.LikeCsvRepository;
 import com.example.community.posts.PostCsvRepository;
 import com.example.community.posts.PostException;
-import com.example.community.posts.dto.PostEntity;
+import com.example.community.posts.entity.PostEntity;
 import com.example.community.users.UserCsvRepository;
+import com.example.community.validator.DomainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,19 +17,18 @@ public class PostLikeService extends LikeService {
     public PostLikeService(UserCsvRepository userCsvRepository,
                            @Qualifier("postLikeRepository") LikeCsvRepository likeCsvRepository,
                            PostCsvRepository postCsvRepository,
-                           CommentsCsvRepository commentsCsvRepository) {
+                           CommentsCsvRepository commentsCsvRepository,
+                           DomainValidator domainValidator) {
         this.contentType = "post";
         this.userCsvRepository = userCsvRepository;
         this.likeCsvRepository = likeCsvRepository;
         this.postCsvRepository = postCsvRepository;
         this.commentsCsvRepository = commentsCsvRepository;
+        this.domainValidator = domainValidator;
     }
 
     @Override
     public void validateContent(Long contendId){
-        PostEntity entity = postCsvRepository.findById(contendId)
-                .orElseThrow(
-                        ()-> new PostException.PostNotFoundException("존재하지 않는 게시글입니다.")
-                );
+        this.domainValidator.validatePostExistById(contendId);
     }
 }

@@ -1,5 +1,5 @@
 package com.example.community.users;
-import com.example.community.users.dto.UserEntity;
+import com.example.community.users.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class UserCsvRepository implements UserRepository {
     public final Map<Long, UserEntity> userStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
-    private final String userDbPath = "src/main/resources/data/users.csv";
 
     private UserEntity createUserDto(String line){
         String[] parts = line.split(",", -1);
@@ -27,14 +26,21 @@ public class UserCsvRepository implements UserRepository {
         String userCreatedAt = parts[6];
         String userDeletedAt = null;
 
-        UserEntity userEntity = new UserEntity(
-                userId, userEmail,userPassword,userNickname,userProfilePic,userIsDeleted,userCreatedAt, userDeletedAt
-        );
+        UserEntity userEntity = UserEntity.builder()
+                .userId(userId)
+                .userEmail(userEmail)
+                .userPassword(userPassword)
+                .userNickname(userNickname)
+                .userProfileImgUrl(userProfilePic)
+                .userIsDeleted(userIsDeleted)
+                .userCreatedAt(userCreatedAt)
+                .userDeletedAt(userDeletedAt)
+                .build();
         return userEntity;
     }
 
     private void init() throws IOException {
-        File file = new File(userDbPath);
+        File file = new File(UsersConstants.PATH_DB);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
         bufferedReader.readLine(); // 칼럼행 건너뛰기
@@ -90,23 +96,23 @@ public class UserCsvRepository implements UserRepository {
 
     @Override
     public void editPassword(UserEntity userEntity, String newPassword) {
-        userEntity.setUserPassword(newPassword);
+        userEntity.updatePassword(newPassword);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
     @Override
     public void editProfile(UserEntity userEntity, String newNickname, String newProfileImgUrl) {
         if (!(newProfileImgUrl == null || newProfileImgUrl.isEmpty())) {
-            userEntity.setUserProfileImgUrl(newProfileImgUrl);
+            userEntity.updateProfileImgUrl(newProfileImgUrl);
         }
-        userEntity.setUserNickname(newNickname);
+        userEntity.updateUserNickname(newNickname);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
     @Override
     public UserEntity save(UserEntity userEntity) {
         long userNextId = sequence.incrementAndGet();
-        userEntity.setUserId(userNextId);
+        userEntity.updateUserId(userNextId);
         userStore.put(userEntity.getUserId(), userEntity);
         return userEntity;
     }
@@ -119,13 +125,13 @@ public class UserCsvRepository implements UserRepository {
     @Override
     public void delete(Long id) {
         UserEntity userEntity = userStore.get(id);
-        userEntity.setUserIsDeleted(true);
+        userEntity.updateUserIsDeleted(true);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 
     @Override
     public void softDelete(UserEntity userEntity) {
-        userEntity.setUserIsDeleted(true);
+        userEntity.updateUserIsDeleted(true);
         userStore.put(userEntity.getUserId(), userEntity);
     }
 }

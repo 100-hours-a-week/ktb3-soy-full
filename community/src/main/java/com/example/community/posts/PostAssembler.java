@@ -6,11 +6,10 @@ import com.example.community.posts.entity.PostCounts;
 import com.example.community.posts.entity.PostEntity;
 import com.example.community.users.entity.UserEntity;
 import com.example.community.users.entity.WriterSummary;
+import org.springframework.stereotype.Component;
 
 public class PostAssembler {
-    Utility util = new Utility();
-    public PostAssembler(){}
-    public PostEntity toEntity(PostCreateRequest postCreateRequest, Long userId) {
+    public static PostEntity toEntity(PostCreateRequest postCreateRequest, Long userId) {
         return PostEntity.builder()
                 .postTitle(postCreateRequest.getPostTitle())
                 .postContent(postCreateRequest.getPostContent())
@@ -19,11 +18,11 @@ public class PostAssembler {
                 .postLikeCounts(0L)
                 .postCommentCounts(0L)
                 .postViewCounts(0L)
-                .postCreatedAt(util.getCreatedAt())
+                .postCreatedAt(Utility.getCreatedAt())
                 .build();
     }
 
-    public PostDetailResponse toDetailResponse(PostEntity postEntity, UserEntity userEntity) {
+    public static PostDetailResponse toDetailResponse(PostEntity postEntity, UserEntity userEntity) {
         WriterSummary writerSummary = WriterSummary.create(
                 userEntity.getUserId(),
                 userEntity.getUserNickname(),
@@ -47,7 +46,7 @@ public class PostAssembler {
                 .build();
     }
 
-    public PostItemResponse toPostItemResponse(PostEntity postEntity, UserEntity userEntity) {
+    public static PostItemResponse toPostItemResponse(PostEntity postEntity, UserEntity userEntity) {
         WriterSummary writerSummary = WriterSummary.create(
                 userEntity.getUserId(),
                 userEntity.getUserNickname(),

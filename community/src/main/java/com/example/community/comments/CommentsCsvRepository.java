@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class CommentsCsvRepository implements CommentsRepository {
     public final Map<Long, CommentsEntity> commentsStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
-    private final String commentsDbPath = "src/main/resources/data/comments.csv";
 
     public CommentsEntity createCommentEntity(String line){
         String[] parts = line.split(",", -1);
@@ -44,7 +43,7 @@ public class CommentsCsvRepository implements CommentsRepository {
     }
 
     private void init() throws IOException {
-        File file = new File(commentsDbPath);
+        File file = new File(CommentsConstants.PATH_COMMENTS);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
         bufferedReader.readLine(); // 칼럼행 건너뛰기

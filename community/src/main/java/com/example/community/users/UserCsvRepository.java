@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class UserCsvRepository implements UserRepository {
     public final Map<Long, UserEntity> userStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
-    private final String userDbPath = "src/main/resources/data/users.csv";
 
     private UserEntity createUserDto(String line){
         String[] parts = line.split(",", -1);
@@ -41,7 +40,7 @@ public class UserCsvRepository implements UserRepository {
     }
 
     private void init() throws IOException {
-        File file = new File(userDbPath);
+        File file = new File(UsersConstants.PATH_DB);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
         bufferedReader.readLine(); // 칼럼행 건너뛰기

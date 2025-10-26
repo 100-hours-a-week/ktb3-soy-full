@@ -18,7 +18,6 @@ public class CommentService {
     private UserCsvRepository userCsvRepository;
     private CommentsCsvRepository commentsCsvRepository;
     private DomainValidator domainValidator;
-    private CommentAssembler commentAssembler = new CommentAssembler();
 
     @Autowired
     public CommentService(CommentsCsvRepository commentsCsvRepository,
@@ -74,7 +73,7 @@ public class CommentService {
             domainValidator.validateCommentExistById(parentCommentId);
             ensureCommentMatchPost(parentCommentId, postId);
         }
-        CommentsEntity commentsEntity = commentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
+        CommentsEntity commentsEntity = CommentAssembler.toEntity(postId, userId, parentCommentId, createCommentRequest.getCommentContent());
         commentsCsvRepository.save(commentsEntity);
         return CreateCommentResponse.of(postId);
     }

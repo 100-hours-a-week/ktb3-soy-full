@@ -7,7 +7,6 @@ import lombok.Getter;
 @Builder(toBuilder = true)
 @Getter
 public class PostCreateRequest {
-    private static final String DEFAULT_POST_IMG = "src/main/resources/images/defaultProfile.jpg";
     @NotBlank
     private String postTitle;
     @NotBlank
@@ -16,9 +15,6 @@ public class PostCreateRequest {
     private String postImageUrl;
 
     public void updatePostImageUrl(String postImageUrl) {
-        if (postImageUrl == ""){
-            postImageUrl = DEFAULT_POST_IMG;
-        }
         this.postImageUrl = postImageUrl;
     }
 }

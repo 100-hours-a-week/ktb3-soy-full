@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PostCsvRepository implements PostRepository {
     public final Map<Long, PostEntity> postStore = new LinkedHashMap<>();
     private AtomicLong sequence = new AtomicLong(0);
-    private final String postDbPath = "src/main/resources/data/posts.csv";
 
     private PostEntity createPostEntity(String line){
         String[] parts = line.split(",");
@@ -44,7 +43,7 @@ public class PostCsvRepository implements PostRepository {
 
     @PostConstruct
     private void init() throws IOException {
-        File file = new File(postDbPath);
+        File file = new File(PostsConstants.PATH_DB);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
         bufferedReader.readLine(); // 칼럼행 건너뛰기

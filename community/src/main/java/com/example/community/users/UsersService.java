@@ -16,7 +16,6 @@ import java.util.Map;
 
 @Service
 public class UsersService {
-    Utility utility = new Utility();
     private UserCsvRepository repository;
     private DomainValidator domainValidator;
     @Autowired
@@ -26,8 +25,6 @@ public class UsersService {
         this.repository = userCsvRepository;
         this.domainValidator = domainValidator;
     }
-
-    private static final String DEFAULT_PROFILE_IMG = "src/main/resources/images/defaultProfile.jpg";
 
     private boolean isEmailExist(String email) {
         return repository.findByEmail(email).isPresent();
@@ -39,7 +36,7 @@ public class UsersService {
 
     private String checkAndSetProfileImage(String profileImgUrl) {
         if (profileImgUrl == null || profileImgUrl.isBlank()) {
-            return DEFAULT_PROFILE_IMG;
+            return UsersConstants.PATH_DEFAULT_PROFILE;
         }
         return profileImgUrl;
     }
@@ -49,7 +46,7 @@ public class UsersService {
         String password = signUpRequest.getUserPassword();
         String nickname = signUpRequest.getUserNickname();
         String profileImgUrl = checkAndSetProfileImage(signUpRequest.getUserProfileImgUrl());
-        String createdAt = utility.getCreatedAt();
+        String createdAt = Utility.getCreatedAt();
 
         nickname = nickname.trim();
         password = password.trim();

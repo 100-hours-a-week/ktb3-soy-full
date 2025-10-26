@@ -18,8 +18,6 @@ public abstract class LikeService {
     public LikeCsvRepository likeCsvRepository;
     public DomainValidator domainValidator;
 
-    private Utility utility = new Utility();
-
     protected String contentType;
     public LikeService(){}
 
@@ -28,7 +26,7 @@ public abstract class LikeService {
     public SimpleResponse like(Long contentId, Long userId) {
         domainValidator.validateUserExistById(userId);
         validateContent(contentId);
-        String createdAt = utility.getCreatedAt();
+        String createdAt = Utility.getCreatedAt();
         LikeEntity likeEntity = LikeEntity.of(
                 contentId,
                 userId,

@@ -4,9 +4,7 @@ import com.example.community.Utility;
 import com.example.community.comments.dto.CommentsEntity;
 
 public class CommentAssembler {
-    Utility util = new Utility();
-    public CommentAssembler(){}
-    public CommentsEntity toEntity(Long postId,
+    public static CommentsEntity toEntity(Long postId,
                                    Long userId,
                                    Long parentId,
                                    String commentContent){

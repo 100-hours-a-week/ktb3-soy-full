@@ -1,16 +1,18 @@
 package com.example.community.users.dto;
 
+import com.example.community.users.UsersConstants;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import org.apache.catalina.User;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 @Getter
 public class EditProfileRequest {
     @NotBlank
-    @Length(max=10)
+    @Length(max= UsersConstants.NICKNAME_MAX_LEN)
     private String userNickname;
-    @URL(message="유효하지 않은 url입니다.")
+    @URL(message= UsersConstants.MSG_URL_NOT_VALID)
     private String userProfileImgUrl;
     public EditProfileRequest() {}
     public EditProfileRequest( String userNickname){

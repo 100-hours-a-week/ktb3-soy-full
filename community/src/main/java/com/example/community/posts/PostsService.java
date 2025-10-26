@@ -22,7 +22,6 @@ public class PostsService {
     private PostCsvRepository postCsvRepository;
     private UserCsvRepository userCsvRepository;
     private DomainValidator domainValidator;
-    private PostAssembler postAssembler = new PostAssembler();
 
     @Autowired
     public PostsService(PostCsvRepository postCsvRepository,
@@ -53,7 +52,7 @@ public class PostsService {
         PostEntity postEntity = findPostById(postId);
         UserEntity writerEntity = findUserById(postEntity.getPostWriterId());
         verifyUser(writerEntity);
-        PostDetailResponse poseDetailResponse = postAssembler.toDetailResponse(postEntity, writerEntity);
+        PostDetailResponse poseDetailResponse = PostAssembler.toDetailResponse(postEntity, writerEntity);
         return poseDetailResponse;
     }
 
@@ -77,7 +76,7 @@ public class PostsService {
         Map<Long, UserEntity> uniqueWriterMap = userCsvRepository.findAllByIds(uniqueWriterIds)
                 .stream().collect(Collectors.toMap(UserEntity::getUserId, Function.identity()));
         return postEntityList.stream()
-                .map(post -> postAssembler.toPostItemResponse(post, uniqueWriterMap.get(post.getPostWriterId())))
+                .map(post -> PostAssembler.toPostItemResponse(post, uniqueWriterMap.get(post.getPostWriterId())))
                 .toList();
     }
 
@@ -127,7 +126,7 @@ public class PostsService {
         UserEntity writerEntity = userCsvRepository.findNotDeletedById(userId)
                 .orElseThrow(() -> new PostException.PostNotAuthorizedException("게시글을 작성할 수 없습니다."));
 
-        PostEntity postEntity = postAssembler.toEntity(postCreateRequest, userId);
+        PostEntity postEntity = PostAssembler.toEntity(postCreateRequest, userId);
         postCsvRepository.save(postEntity);
         Long postId = postEntity.getPostId();
         return PostCreateResponse.of(postId);

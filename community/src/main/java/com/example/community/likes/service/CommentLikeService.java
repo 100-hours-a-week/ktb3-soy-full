@@ -13,16 +13,17 @@ import org.springframework.stereotype.Service;
 
 @Service("commentLikeService")
 public class CommentLikeService extends LikeService {
+
+    public CommentsCsvRepository commentsCsvRepository;
+
     @Autowired
     public CommentLikeService(UserCsvRepository userCsvRepository,
                               @Qualifier("commentLikeRepository") LikeCsvRepository likeCsvRepository,
-                              PostCsvRepository postCsvRepository,
                               CommentsCsvRepository commentsCsvRepository,
                               DomainValidator domainValidator) {
         this.contentType = "comment";
         this.userCsvRepository = userCsvRepository;
         this.likeCsvRepository = likeCsvRepository;
-        this.postCsvRepository = postCsvRepository;
         this.commentsCsvRepository = commentsCsvRepository;
         this.domainValidator = domainValidator;
     }

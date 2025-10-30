@@ -13,17 +13,17 @@ import org.springframework.stereotype.Service;
 
 @Service("postLikeService")
 public class PostLikeService extends LikeService {
+    public PostCsvRepository postCsvRepository;
+
     @Autowired
     public PostLikeService(UserCsvRepository userCsvRepository,
                            @Qualifier("postLikeRepository") LikeCsvRepository likeCsvRepository,
                            PostCsvRepository postCsvRepository,
-                           CommentsCsvRepository commentsCsvRepository,
                            DomainValidator domainValidator) {
         this.contentType = "post";
         this.userCsvRepository = userCsvRepository;
         this.likeCsvRepository = likeCsvRepository;
         this.postCsvRepository = postCsvRepository;
-        this.commentsCsvRepository = commentsCsvRepository;
         this.domainValidator = domainValidator;
     }
 
@@ -31,4 +31,5 @@ public class PostLikeService extends LikeService {
     public void validateContent(Long contendId){
         this.domainValidator.validatePostExistById(contendId);
     }
+
 }

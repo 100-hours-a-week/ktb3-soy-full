@@ -1,19 +1,14 @@
 package com.example.community.likes.service;
 
 import com.example.community.Utility;
-import com.example.community.comments.CommentsCsvRepository;
+import com.example.community.likes.LikeException;
 import com.example.community.likes.dto.SimpleResponse;
 import com.example.community.likes.entity.LikeEntity;
 import com.example.community.likes.repository.LikeCsvRepository;
-import com.example.community.posts.PostCsvRepository;
 import com.example.community.users.UserCsvRepository;
-import com.example.community.users.UserException;
-import com.example.community.users.entity.UserEntity;
 import com.example.community.validator.DomainValidator;
 
 public abstract class LikeService {
-    public PostCsvRepository postCsvRepository;
-    public CommentsCsvRepository commentsCsvRepository;
     public UserCsvRepository userCsvRepository;
     public LikeCsvRepository likeCsvRepository;
     public DomainValidator domainValidator;
@@ -23,9 +18,17 @@ public abstract class LikeService {
 
     public abstract void validateContent(Long contentId);
 
-    public SimpleResponse like(Long contentId, Long userId) {
+    public final void validateLikes(Long contentId, Long userId){
+        if (likeCsvRepository.existsByContentAndUserId(contentId, userId)) {
+            throw new LikeException.AlreadyLikedException("이미 좋아요한 게시글입니다.");
+        }
+    }
+
+    public final SimpleResponse like(Long contentId, Long userId) {
         domainValidator.validateUserExistById(userId);
         validateContent(contentId);
+        validateLikes(contentId, userId);
+
         String createdAt = Utility.getCreatedAt();
         LikeEntity likeEntity = LikeEntity.of(
                 contentId,
@@ -33,6 +36,7 @@ public abstract class LikeService {
                 createdAt
         );
         likeCsvRepository.save(likeEntity);
+
         return SimpleResponse.forLike(
                 this.contentType,
                 contentId,
@@ -40,10 +44,10 @@ public abstract class LikeService {
         );
     }
 
-    public SimpleResponse unlike(Long contentId, Long userId) {
+    public final SimpleResponse unlike(Long contentId, Long userId) {
         domainValidator.validateUserExistById(userId);
         validateContent(contentId);
-        likeCsvRepository.deleteByContentAndUserID(contentId, userId);
+        likeCsvRepository.deleteByContentAndUserId(contentId, userId);
         return SimpleResponse.forUnlike(
                 this.contentType,
                 contentId,

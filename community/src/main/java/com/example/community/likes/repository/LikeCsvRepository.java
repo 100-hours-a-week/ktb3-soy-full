@@ -1,14 +1,12 @@
 package com.example.community.likes.repository;
 
-import com.example.community.likes.LikeException;
 import com.example.community.likes.entity.LikeEntity;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public abstract class LikeCsvRepository{
+public abstract class LikeCsvRepository implements LikeRepository {
     Map<String, LikeEntity> likeStore = new HashMap<>();
     String dbPath;
     String contentType;
@@ -21,9 +19,9 @@ public abstract class LikeCsvRepository{
 
     public LikeEntity createEntityFromLine(String line){
         line.split(",");
-        Long contentId = Long.valueOf(line.split(",")[0]);
-        Long userId = Long.valueOf(line.split(",")[1]);
-        String createdAt = line.split(",")[2];
+        Long contentId = Long.valueOf(line.split(",")[1]);
+        Long userId = Long.valueOf(line.split(",")[2]);
+        String createdAt = line.split(",")[3];
         return LikeEntity.of(contentId, userId, createdAt);
     }
 
@@ -32,19 +30,13 @@ public abstract class LikeCsvRepository{
         try (BufferedReader reader = new BufferedReader(new FileReader(file))){
             String line;
             reader.readLine();
-            line = reader.readLine();
-            LikeEntity likeEntity = createEntityFromLine(line);
-            String id = key(likeEntity.getContentId(), likeEntity.getUserId());
-            likeStore.put(id, likeEntity);
+            while ((line = reader.readLine()) != null){
+                LikeEntity likeEntity = createEntityFromLine(line);
+                save(likeEntity);
+            }
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-    }
-
-    public LikeEntity findByContentAndUserID(Long contentId, Long userID) {
-        return Optional.ofNullable(likeStore.get(key(contentId, userID))).orElseThrow(
-                () -> new LikeException.NotFoundException("리소스를 찾지 못했습니다.")
-        );
     }
 
     public LikeEntity save(LikeEntity entity) {
@@ -53,12 +45,12 @@ public abstract class LikeCsvRepository{
         return entity;
     }
 
-    public void deleteByContentAndUserID(Long contentId, Long userID){
+    public void deleteByContentAndUserId(Long contentId, Long userID){
         String key = key(contentId, userID);
         likeStore.remove(key);
     }
 
-    public boolean existsByContentAndUserID(Long contentId, Long userID) {
+    public boolean existsByContentAndUserId(Long contentId, Long userID) {
         String key = key(contentId, userID);
         return likeStore.containsKey(key);
     }
